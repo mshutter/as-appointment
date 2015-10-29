@@ -57,7 +57,7 @@
 	<div id='form-curriculum' hidden>
 		<!-- Drop-down selection list of departments -->
 		<div class="form-group" id="dept-dropdown">
-			<select name="departmentPref" onchange="getCurrSelect(this.value)">
+			<select name="deptID" onchange="getCurrSelect(this.value)">
 
 				<option value='-1'>
 					Department (select one)
@@ -95,7 +95,7 @@
 	<?php
 		/** NOTE:
 		 * #hid-apptType will hold the value of apptType (TypeID) that will end up ultimately making
-		 * it into the database. Its value is based on form.generalApptType (radio buttons) unless
+		 * it to the next page. Its value is based on form.generalApptType (radio buttons) unless
 		 * the user selects faculty/staff meeting as their general type, in which case apptType will
 		 * be set to equal the apptTypevalue of the specific type of staff/faculty meeting. The logic
 		 * controlling this functionality can be found in the inline javascript below.
@@ -109,8 +109,10 @@
 </form>
 
 
-<!-- Calendar script -->
+
+<!-- Calendar dependency -->
 <script src='js/pikaday.js'></script>
+
 <script>
 	window.onload = function () {
 
@@ -156,7 +158,7 @@
 		.success(function (data) {
 			// Parse JSON and create HTML select element string
 			var currList = JSON.parse(data);
-			var currSelect = '<select name="curriculumPref" id="">';
+			var currSelect = '<select name="currID" id="">';
 			    currSelect += '<option value="">Undecided</option>';
 
 			// Add each curriculum option item to select HTML

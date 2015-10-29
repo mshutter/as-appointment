@@ -1,9 +1,9 @@
-<?php
+<?php session_start();
 // Returns JSON of requested date @d, along with two days in both the past and future 
 
 if ( !isset( $_GET['d'] ) || !( $date = strtotime( $_GET['d'] ) ) )
 	//set $date to equal $_GET['d'] or the current date
-	$date = time();
+	$date = ( isset( $_SESSION['datePref'] ) ) ? $_SESSION['datePref'] : time();
 
 
 //create simple item containing information about day
