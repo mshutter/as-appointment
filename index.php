@@ -27,7 +27,7 @@
 
 <h2>Pay Us a Visit</h2>
 
-<form id='visit' action="#" method="GET">
+<form id='visit' action="step-two.php" method="POST">
 	<div id='error-display' class="form-group">
 		<!-- Validation errors will be displayed here -->
 	</div>
@@ -44,13 +44,12 @@
 
 		<input id='rad-faculty' type="radio" name='generalApptType' value='-2'>
 		<label for='rad-faculty'>Meet With Faculty/Staff</label>
-		<br />
 	</div>
 
 
 	<!-- pikadate.js approximate date selection -->
 	<div class='form-group' id='date-dropdown' hidden>
-		<input id='select-date' type='text' name='date-pref' value='Approximate visit date' />
+		<input id='select-date' type='text' name='datePref' value='Approximate visit date' />
 	</div>
 
 
@@ -58,7 +57,7 @@
 	<div id='form-curriculum' hidden>
 		<!-- Drop-down selection list of departments -->
 		<div class="form-group" id="dept-dropdown">
-			<select name="department" onchange="getCurrSelect(this.value)">
+			<select name="departmentPref" onchange="getCurrSelect(this.value)">
 
 				<option value='-1'>
 					Department (select one)
@@ -151,13 +150,13 @@
 	function getCurrSelect (value) {
 		// Call actions/getCurrJSON.php with @q = value
 		$.ajax({
-			url: 'actions/getCurrJSON.php?q=' + value,
+			url: 'api/currList.php?q=' + value,
 			context: $('#curr-dropdown')
 		})
 		.success(function (data) {
 			// Parse JSON and create HTML select element string
 			var currList = JSON.parse(data);
-			var currSelect = '<select name="curriculum" id="">';
+			var currSelect = '<select name="curriculumPref" id="">';
 			    currSelect += '<option value="">Undecided</option>';
 
 			// Add each curriculum option item to select HTML

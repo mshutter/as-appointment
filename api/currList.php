@@ -1,5 +1,5 @@
 <?php
-	// This file returns a JSON array containing information about the
+	// Returns a JSON array containing information about the
 	// curriculums Alfred State offers. If variable @q is passed, the
 	// curriculums will be filtered by DepartmentID == @q
 
