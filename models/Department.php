@@ -6,7 +6,9 @@
 		public $deptList;
 
 		public function __construct () {
-			self::$conn = Database::Connect();
+			//if DB connection has not been established, do so.
+			( !self::$conn ) ? self::$conn = Database::Connect() : null;
+
 			$this->GetDepartments();
 		}
 

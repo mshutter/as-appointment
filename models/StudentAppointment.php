@@ -11,16 +11,22 @@ class StudentAppointment {
 
 	// ********** Constructor **********
 	public function __construct( $apptID = -1 ) {
-		self::$conn = Database::Connect();
+		//if DB connection has not been established, do so.
+		( !self::$conn ) ? self::$conn = Database::Connect() : null;
 
 		// If $apptID is not provided, generate a new one
 		if ( $apptID < 0 ) {
 			$this->CreateAppointment();
 		}
 
-		// Else, attempt to create a new 
+		// Else, attempt to populate this with an existing appt in DB
 		else {
-			$this->GetAppointment( $apptID );
+
+			//and if an existing record is not found..
+			if ( !$this->GetAppointment( $apptID ) )
+
+				//create a new one.
+				$this->CreateAppointment();
 		}
 	}
 

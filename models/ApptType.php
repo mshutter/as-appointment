@@ -6,7 +6,9 @@
 		public $apptTypeList;
 
 		public function __construct ( $onlyFacStaff = 0 ) {
-			self::$conn = Database::Connect();
+			//if DB connection has not been established, do so.
+			( !self::$conn ) ? self::$conn = Database::Connect() : null;
+
 			$this->ListApptTypes( $onlyFacStaff );
 		}
 
@@ -14,7 +16,7 @@
 		// pass $onlyFacStaff if list should only contain faculty/staff types
 		private function ListApptTypes ( $onlyFacStaff = 0 ) {
 
-			// If list should only contain faculty/staff types..
+			// If list should only contain faculty/staff appts..
 			if ( $onlyFacStaff ) {
 
 				// Get only those types.

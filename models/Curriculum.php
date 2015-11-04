@@ -6,7 +6,9 @@
 		public $currList;
 
 		public function __construct( $deptID = -1 ) {
-			self::$conn = Database::Connect();
+			//if DB connection has not been established, do so.
+		( !self::$conn ) ? self::$conn = Database::Connect() : null;
+		
 			$this->ListCurriculums( $deptID );
 		}
 

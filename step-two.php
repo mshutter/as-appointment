@@ -24,28 +24,31 @@ if ( !isset( $_POST['datePref'] ) && !isset( $_SESSION['datePref'] ) ) {
 }
 
 
-// Update session variables to preserve user progress
-else {
 //apptType
-	if ( isset( $_POST['apptType'] ) )
-		$_SESSION['apptType'] = $_POST['apptType'];
+if ( isset( $_POST['apptType'] ) )
+	$_SESSION['apptType'] = $_POST['apptType'];
 
 //datePref
-	if ( isset( $_POST['datePref'] ) )
-		$_SESSION['datePref'] = strtotime( $_POST['datePref'] );
-	else 
-		$_SESSION['datePref'] = time();
+if ( isset( $_POST['datePref'] ) )
+	$_SESSION['datePref'] = strtotime( $_POST['datePref'] );
+else 
+	$_SESSION['datePref'] = time();
 
 //deptID
-	if ( isset( $_POST['deptID'] ) ) {
-		$_SESSION['deptID'] = $_POST['deptID'];
-	}
+if ( isset( $_POST['deptID'] ) ) {
+	$_SESSION['deptID'] = $_POST['deptID'];
+}
 
 //currID
-	if ( isset( $_POST['currID'] ) ) {
-		$_SESSION['currID'] = $_POST['currID'];
-	}
+if ( isset( $_POST['currID'] ) ) {
+	$_SESSION['currID'] = $_POST['currID'];
 }
+
+//if apptType is not 3 (department tour), set currID to -1
+if ( $_SESSION['apptType'] != '3' ) {
+	$_SESSION['currID'] = '-1';
+}
+
 
 
 // Begin HTML
@@ -87,9 +90,10 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 	</div>
 
 	<div class='appt-content'>
-		
+		<!-- AJAX will populate this with appointments that match filters -->
 	</div>
 </div>
+
 
 
 <script>
@@ -118,6 +122,7 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 	}
 
 
+
 	//get json for date nav and pass it to render function
 	function refreshDateNav (date) {
 		uri = (date) ? '?d='+date : '';
@@ -130,16 +135,16 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 		return false;
 	}
 
-	//renders all 
+	//renders each nav item onto page
 	function renderDateNav (json) {
 		var navHtml = "";
-		var days = JSON.parse(json); 
+		var days = JSON.parse(json);
 
 		for (var i = 0; i < days.length; i++) {
 			navHtml += "<span>";
 			navHtml += "<a href='#' onclick='return refreshUI({date:\""+days[i].fullDate+"\"});'>";
 			navHtml += days[i].dayAbbrev+" "+days[i].dayOfMonth+"</a>";
-			navHtml += "</span>"; 
+			navHtml += "</span>";
 		}
 
 		//update navigation of days
@@ -147,6 +152,7 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 
 		return false;
 	}
+
 
 
 	function refreshContent (args) {
@@ -174,17 +180,35 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 		//make ajax call to api
 		$.ajax({
 			url: 'api/filterAppts.php'+strUri,
-			method: 'GET',
-			context: $('.appt-content')
+			method: 'GET'
 		})
-		.done(function (data) {
-			$(this).html(data);
-		});
+		.done(renderContent);
 
 		return false;
 	}
 
 	function renderContent (json) {
+		if ( json == 'null' ) {
+			$('.appt-content').html( "There are no visits scheduled on this day that match your search criteria." );
+			return false;
+		}
+
+		var contentHTML = '';
+		var data = JSON.parse(json);
+
+		//for each record in @data
+		for (var i = 0; i < data.length; i++) {
+			contentHTML += '<div class="appt-sched-item" id="'+data[i].SchedApptID+'">';
+			contentHTML += data[i].SchedApptID;
+			contentHTML += '</div>';
+		}
+
+		//place generated HTML into .appt-content container
+		$('.appt-content').html( contentHTML );
+
+		//DEBUG
+		$('.appt-content').append( 'Incoming JSON:<br />'+json );
+
 		return false;
 	}
 </script>
