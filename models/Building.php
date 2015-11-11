@@ -10,8 +10,14 @@
 		$buildingName (string)   - Name of each building
 		$isOnAlfredCampus (bool) - TRUE if at Alfred campus, FALSE if at Wellsville
 
+
+	Instance Methods
+		->GetRooms()
+			- Returns AND appends to this instance a list of all Room objects
+			  related to this building 
+
 	Static Methods
-		::GetBuilding( $buildingAbbrev )
+		::GetByBuildingAbbrev( $buildingAbbrev )
 			- Returns building matching abbreviation or FALSE
 
 		::ListBuildings( [ $campus = null ] )
@@ -50,8 +56,15 @@ class Building {
 	}
 
 
+// ========== Instance Methods ========== //
+	public function GetRooms () {
+		require_once 'Room.php';
+		return $this->rooms = Room::ListByBuildingAbbrev( $this->buildingAbbrev );
+	}
+
+
 // ========== Static Methods ========== //
-	public static function GetBuilding( $buildingAbbrev ) {
+	public static function GetByBuildingAbbrev( $buildingAbbrev ) {
 		self::InitConnection();
 
 		$stmt = self::$conn->prepare('SELECT * FROM `Building`

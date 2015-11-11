@@ -11,8 +11,9 @@
 		$lastName
 		...
 
+
 	Static Methods
-		::GetStudent( $studentID [, $extendedInfo = false ] )
+		::GetByStudentID( $studentID [, $extendedInfo = false ] )
 			- Returns basic information (ID, email, name) of student matching $studentID
 			- Pass true to $extendedInfo to return all information regarding this student
 
@@ -20,7 +21,7 @@
 			- Returns basic information (ID, email, name) of all students
 			- Pass true to $extendedInfo to return all information for all students
 
-		::ListStudentsAttending( $schedApptID [, $extendedInfo = false ] )
+		::ListBySchedApptID( $schedApptID [, $extendedInfo = false ] )
 			- Returns basic information on Students that have registered to attend a scheduled appointment
 			- Pass true to $extendedInfo to return all information for all students
 */
@@ -76,7 +77,7 @@ class Student {
 
 
 // ========== Static Methods ========== //
-	public static function GetStudent ( $studentID, $extendedInfo = false ) {
+	public static function GetByStudentID ( $studentID, $extendedInfo = false ) {
 		self::InitConnection();
 
 		//If extended info is requested..
@@ -136,7 +137,7 @@ class Student {
 	}
 
 
-	public static function ListStudentsAttending ( $schedApptID, $extendedInfo = false ) {
+	public static function ListBySchedApptID ( $schedApptID, $extendedInfo = false ) {
 		self::InitConnection();
 
 		//Initialize query string depending on value for $extendedInfo

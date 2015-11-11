@@ -8,7 +8,7 @@
 
 	Instance Variables
 		$schedApptID (string)  - Unique ID (10 char alphanumeric string)
-		$apptType (int)        - Identifies the category of the appointment (e.g. 2 = "Campus Tour")
+		$apptTypeID (int)      - Identifies the category of the appointment (e.g. 2 = "Campus Tour")
 		$curriculumID (string) - Identifier to link curriculum to event
 		                         * Will be required only if ApptType is "department tour"
 		$timeStart (string)    - Datetime string representing the exact time the appt is scheduled for
@@ -26,8 +26,22 @@
 		                         them in one process.
 	
 
+	Instance Methods
+		->GetAppointmentTypeDetails()
+			- Return AND append an AppointmentType object to this instance, which details this ScheduledAppointment's
+			  appointment type
+
+		->GetCurriculumDetails()
+			- Return AND append a Curriculum object to this instance, which details this ScheduledAppointment's curriculum,
+			  if it has one
+
+		->GetStudentsAttending( [ $extendedInfo = false ] )
+			- Return AND add to this instance a list of Student objects, one for each student expected to attend this appt
+			- Will return just basic info (ID, name and email), unless $extendedInfo is set to true
+
+
 	Static Methods
-		::GetAppointment( $schedApptID )
+		::GetBySchedApptID( $schedApptID )
 			- Returns a single ScheduledAppointment object matching the specified $schedApptID
 
 		::ListByApptType( $apptType [, $curriculumID = null [, $date = null [, $endDate = null ] ] ] )
@@ -46,7 +60,7 @@ class ScheduledAppointment {
 	private static $conn;
 
 	public $schedApptID;
-	public $apptType;
+	public $apptTypeID;
 	public $curriculumID;
 	public $timeStart;
 	public $timeEnd;
@@ -68,7 +82,7 @@ class ScheduledAppointment {
 
 		//Assign variables if they exist in $params array
 		$this->schedApptID  = ( array_key_exists('SchedApptID', $params) )  ? $params['SchedApptID'] : null;
-		$this->apptType     = ( array_key_exists('ApptType', $params) )     ? $params['ApptType'] : null;
+		$this->apptTypeID   = ( array_key_exists('ApptTypeID', $params) )   ? (int)$params['ApptTypeID'] : null;
 		$this->curriculumID = ( array_key_exists('CurriculumID', $params) ) ? $params['CurriculumID'] : null;
 		$this->timeStart    = ( array_key_exists('TimeStart', $params) )    ? $params['TimeStart'] : null;
 		$this->timeEnd      = ( array_key_exists('TimeEnd', $params) )      ? $params['TimeEnd'] : null;
@@ -78,13 +92,32 @@ class ScheduledAppointment {
 	}
 
 
+
+// ========== Instance Methods ========== //
+	public function GetAppointmentTypeDetails () {
+		require_once 'AppointmentType.php';
+		return $this->AppointmentType = AppointmentType::GetByApptTypeID( $this->apptTypeID );
+	}
+
+	public function GetCurriculumDetails () {
+		require_once 'Curriculum.php';
+		return $this->Curriculum = Curriculum::GetByCurriculumID( $this->curriculumID );
+	}
+
+	public function GetStudentsAttending ( $extendedInfo = false ) {
+		require_once 'Student.php';
+		return $this->StudentsAttending = Student::ListBySchedApptID( $this->schedApptID, $extendedInfo );
+	}
+
+
+
 // ========== Static Methods ========== //
-	public static function GetAppointment ( $schedApptID ) {
+	public static function GetBySchedApptID ( $schedApptID ) {
 		self::InitConnection();
 
 		//query DB for record matching (SchedApptID = $schedApptID)
 		$stmt = self::$conn->prepare(
-			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `curriculumID`, `ApptType`
+			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `curriculumID`, `ApptTypeID`
 		   FROM `ScheduledAppointment`
 		   WHERE `SchedApptID` = :schedApptID');
 		$stmt->bindParam(':schedApptID', $schedApptID, PDO::PARAM_INT);
@@ -100,17 +133,17 @@ class ScheduledAppointment {
 	}
 
 
-	public static function ListByApptType ( $apptType, $curriculumID = null, $date = null, $endDate = null ) {
+	public static function ListByApptTypeID ( $apptTypeID, $curriculumID = null, $date = null, $endDate = null ) {
 		self::InitConnection();
 
 		//create query string 
-		$qry = 'SELECT `SchedApptID`, `ApptType`, `TimeStart`, `TimeEnd`
+		$qry = 'SELECT `SchedApptID`, `ApptTypeID`, `TimeStart`, `TimeEnd`
 		        FROM `ScheduledAppointment`
-		        WHERE `ApptType` = :apptType';
+		        WHERE `ApptTypeID` = :apptTypeID';
 
 
-		//if $apptType is 3 (department tour)..
-		if ( $apptType == 3 ) {
+		//if $apptTypeID is 3 (department tour)..
+		if ( $apptTypeID == 3 ) {
 
 			//and a curriculum has been passed, append it to the query string
 			if ( $curriculumID )
@@ -153,7 +186,7 @@ class ScheduledAppointment {
 		$stmt = self::$conn->prepare($qry);
 
 		//attach params to query and execute
-		$stmt->bindParam( ':apptType', $apptType, PDO::PARAM_INT );
+		$stmt->bindParam( ':apptTypeID', $apptTypeID, PDO::PARAM_INT );
 		( $curriculumID ) ? $stmt->bindParam( ':currID', $curriculumID, PDO::PARAM_STR ) : null;
 		( $date )         ? $stmt->bindParam( ':date', $date, PDO::PARAM_STR )           : null;
 		( $endDate )      ? $stmt->bindParam( ':endDate', $endDate, PDO::PARAM_STR )     : null;

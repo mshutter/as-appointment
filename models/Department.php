@@ -11,9 +11,15 @@
 		$title (string)        - Title of department displayed to users
 		$description (string)  - Short paragraph describing department to users
 
+	
+	Instance Methods
+		->GetCurriculums()
+			- Returns AND appends to this instance a list of Curriculum objects
+			  matching $this->departmentID
+
 
 	Static Methods
-		::GetDepartment( $departmentID )
+		::GetByDepartmentID( $departmentID )
 			- Returns Department object matching the given departmentID
 
 		::ListAllDepartments( )
@@ -50,8 +56,15 @@ class Department {
 	}
 
 
+// ========== Instance Methods ========== //
+	public function GetCurriculums() {
+		require_once 'Curriculum.php';
+		return $this->Curriculums = Curriculum::ListByDepartmentID( $this->departmentID );
+	}
+
+
 // ========== Static Methods ========== //
-	public static function GetDepartment ( $departmentID ) {
+	public static function GetByDepartmentID ( $departmentID ) {
 		self::InitConnection();
 
 		//Query Department for a matching DepartmentID

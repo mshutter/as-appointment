@@ -12,15 +12,20 @@
 		$title (string)        - Concise title given to present curriculum to users
 		$description (string)  - Complete description detailing learning outcomes, courses, etc..
 
+	
+	Instance Methods
+		->GetDepartmentDetails()
+			- Return AND add to this instance a Department object matching this->departmentID
+
 
 	Static Methods
-		::GetCurriculum( $curriculumID )
+		::GetByCurriculumID( $curriculumID )
 			- Returns complete Curriculum object matching $curriculumID
 
 		::ListAllCurriculums()
 			- Return array of all Curriculums
 
-		::ListByDepartment( [ $departmentID = -1 ] )
+		::ListByDepartmentID( [ $departmentID = -1 ] )
 			- If $departmentID is not passed, return all curriculums, grouped by department
 			- If department is specified, return array of Curriculum objects that match $departmentID
 */
@@ -46,6 +51,13 @@ class Curriculum {
 	}
 
 
+// ========== Instance Methods ========== //
+	public function GetDepartmentDetails ()  {
+		require_once 'Department.php';
+		return $this->Department = Department::GetByDepartmentID( $this->departmentID );
+	}
+
+
 // ========== Constructor ========== //	
 	private function __construct( $params ) {
 
@@ -58,7 +70,7 @@ class Curriculum {
 
 
 // ========== Static Methods ========== //
-	public static function GetCurriculum( $curriculumID ) {
+	public static function GetByCurriculumID( $curriculumID ) {
 		self::InitConnection();
 
 		//Get Curriculum from DB by CurriculumID
@@ -108,65 +120,33 @@ class Curriculum {
 	}
 
 
-	public static function ListByDepartment ( $departmentID = -1 ) {
+	public static function ListByDepartmentID ( $departmentID ) {
 		self::InitConnection();
 
-		//If a department ID has been provided:
-		if ( $departmentID !== -1 ) {
+		//Get curriculums from DB that match $departmentID.
+		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`
+		                              FROM `Curriculum`
+		                              WHERE `DepartmentID` = :departmentID');
+		$stmt->bindParam(':departmentID', $departmentID, PDO::PARAM_INT);
+		$stmt->execute();
 
-			//Get curriculums from DB that match $departmentID.
-			$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`
-			                              FROM `Curriculum`
-			                              WHERE `DepartmentID` = :departmentID');
-			$stmt->bindParam(':departmentID', $departmentID, PDO::PARAM_INT);
-			$stmt->execute();
+		//If Curriculums were successfully retrieved..
+		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//If Curriculums were successfully retrieved..
-			if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
+			//create an array to hold them..
+			$curriculumList = [];
 
-				//create an array to hold them..
-				$curriculumList = [];
-
-				//populate it with Curriculum objects..
-				foreach ( $arr as $r ) {
-					array_push( $curriculumList, new self($r) );
-				}
-
-				//and return it.
-				return $curriculumList;
+			//populate it with Curriculum objects..
+			foreach ( $arr as $r ) {
+				array_push( $curriculumList, new self($r) );
 			}
 
-			//If no Curriculums were retrieved:
-			else return false;
+			//and return it.
+			return $curriculumList;
 		}
 
-
-		//If a department has not been specified
-		else {
-
-			//Get list of Departments from DB
-			$stmt = self::$conn->prepare('SELECT `DepartmentID`, `Title`
-			                              FROM `Department`');
-			$stmt->execute();
-
-			//If Departments were successfully retrieved from DB:
-			if ( $departmentList = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
-
-				//For each department in $departmentList..
-				foreach ($departmentList as &$dept) {
-					$tmpDeptID = $dept['DepartmentID'];
-
-					//attach an array of all Curriculums within that department..
-					$dept['CurriculumList'] = Curriculum::ListByDepartment( $tmpDeptID );
-				}
-
-				//and return the 2d array.
-				return $departmentList;
-			}
-
-			//If no Departments were retrieved from the DB:
-			else return false;
-		}
+		//If no Curriculums were retrieved:
+		else return false;
 	}
 
 }
