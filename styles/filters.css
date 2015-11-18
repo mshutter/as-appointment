@@ -1,0 +1,27 @@
+*,
+* > * {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important; }
+
+.hidden {
+  display: none; }
+
+.no-side-pad {
+  padding-left: 0;
+  padding-right: 0; }
+
+.row-space {
+  display: block;
+  clear: both;
+  width: 100%;
+  height: 1em; }
+
+*[data-role='dropdown-container'] {
+  display: none; }
+
+.appt-dropdown-item {
+  width: 100%;
+  text-align: left; }
+
+/*# sourceMappingURL=filters.css.map */

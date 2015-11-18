@@ -106,16 +106,16 @@ class Building {
 		$stmt->execute();
 
 		//If the query was successful in fetching results
-		if ( $tmps = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
+		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
 			//Create a list for the buildings..
 			$buildingList = [];
 
 			//and for each building..
-			foreach ( $tmps as $tmp ) {
+			foreach ( $arr as $r ) {
 
 				//populate the list.
-				array_push( $buildingList, new self( $tmp ) );
+				array_push( $buildingList, new self( $r ) );
 			}
 
 			return $buildingList;

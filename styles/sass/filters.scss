@@ -1,0 +1,29 @@
+//Reset border-radius set by bootstrap
+*,
+* > * {
+  -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+          border-radius: 0 !important;
+}
+
+//Simple display and structuring classes
+.hidden {
+	display: none; }
+.no-side-pad {
+	padding-left: 0;
+	padding-right: 0}
+.row-space {
+	display: block;
+	clear: both;
+	width: 100%;
+	height: 1em; }
+
+
+//Styles for dropdowns
+*[data-role='dropdown-container'] {
+	display: none;
+}
+.appt-dropdown-item {
+	width: 100%;
+	text-align: left;
+}

@@ -117,7 +117,7 @@ class ScheduledAppointment {
 
 		//query DB for record matching (SchedApptID = $schedApptID)
 		$stmt = self::$conn->prepare(
-			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `curriculumID`, `ApptTypeID`
+			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `CurriculumID`, `ApptTypeID`
 		   FROM `ScheduledAppointment`
 		   WHERE `SchedApptID` = :schedApptID');
 		$stmt->bindParam(':schedApptID', $schedApptID, PDO::PARAM_INT);
