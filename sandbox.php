@@ -142,7 +142,7 @@ $dept->GetCurriculums();
 		<?php foreach ( $facStaffAppts as $type ) : ?>		
 
 		<label class="btn btn-default appt-dropdown-item">
-			<input id="option-facStaff<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptType" value="<?php echo $type->apptTypeID; ?>" />
+			<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptType" value="<?php echo $type->apptTypeID; ?>" />
 			<?php echo $type->title; ?>
 		</label>
 
@@ -157,7 +157,7 @@ $dept->GetCurriculums();
 		<!-- Ajax populates this with Department Filter form elements -->
 		<div id="dept1">
 
-			<label class="btn btn-primary col-xs-11" data-role='dropdown-toggle' data-dropdown="dropdown-dept1">	
+			<label id="btn-dept1" class="btn btn-primary col-xs-11" data-role='dropdown-toggle' data-dropdown="dropdown-dept1">	
 				<input type="hidden" name="departmentID" value="<?php echo $dept->departmentID; ?>" />
 				<?php echo $dept->title; ?>
 				<i class="glyphicon glyphicon-menu-down"></i>
@@ -171,7 +171,7 @@ $dept->GetCurriculums();
 				<?php foreach ($dept->Curriculums as $curr) : ?>
 
 				<label class="btn btn-default appt-dropdown-item">
-					<input type="checkbox" name="curriculumID" value="<?php echo $curr->curriculumID; ?>" />
+					<input id="option-curr-<?php echo $curr->curriculumID; ?>" type="checkbox" name="curriculumID" value="<?php echo $curr->curriculumID; ?>" />
 					<?php echo $curr->title; ?>
 				</label>
 
@@ -196,7 +196,8 @@ $dept->GetCurriculums();
 		initButtons();
 
 		$('#input-date').datepicker({
-			dateFormat: "m/d/yy"
+			dateFormat: "m/d/yy",
+			minDate: 0
 		});
 
 		//Focus hidden date input on button click (opens datepicker)
@@ -221,15 +222,16 @@ $dept->GetCurriculums();
 
 // ========== Validation UI ========== //
 
-
+	//Binds UI changes to all buttons on this page
 	function initButtons () {
+
 		//Bind UI change to Date selection
 		$('#input-date').change(function () {
 			toggleValidationUI(
-				//UI context
+				//Context for UI change
 				$('#btn-date'),
 
-				//validation
+				//validation: if input is a valid date
 				function () {
 					//Check if JavaScript is able to interpret the input as a date
 					var input = $('#input-date').val();
@@ -259,7 +261,7 @@ $dept->GetCurriculums();
 		//Bind UI change to Campus Tour selection
 		$('#input-campusTour').change(function () {
 			toggleValidationUI(
-				//UI context
+				//Context for UI change
 				$('#btn-campusTour'),
 
 				//validation
@@ -275,13 +277,14 @@ $dept->GetCurriculums();
 			);
 		});
 
+
 		//Bind UI change to Faculty/Staff Appt selection
 		$('input[id^="option-facStaff"]').change(function () {
 			toggleValidationUI(
-				//UI context
+				//Context for UI change
 				$('#btn-facStaffAppt'),
 
-				//validation
+				//validation: if any any faculty/staff appointments were selected
 				function () {
 					var state = false
 					$('input[id^="option-facStaff"]').each(function () {
@@ -302,9 +305,40 @@ $dept->GetCurriculums();
 				}
 			);
 		});
+
+
+		//Bind UI change to Department Tour selection
+		$('#dept1 input[id^="option-curr"]').change(function () {
+			console.log($(this));
+			toggleValidationUI(
+				//Context for UI change
+				$('#btn-dept1'),
+
+				//validation: if any curriculums have been selected
+				function () {
+					var state = false
+					$('#dept1 input[id^="option-curr"]').each(function () {
+						if ( $(this).prop('checked') ) {
+							state = true;
+							return;
+						}
+					});
+					return state;
+				},
+
+				//UI execution
+				function ( context, state ) {
+					context
+						.toggleClass('btn-primary', !state)
+						.toggleClass('btn-success', state);
+					//console.log(state); //DEBUG
+				}
+			);
+		});
 	}
 
-	//Encapsulation used for validation-based and UI-based document changes (for binding)
+
+	//Encapsulation used for validation-based and UI-based document changes (for binding, e.g. onclick)
 	function toggleValidationUI (context, validate, execute) {
 		//context  => jQuery DOM element being targeted by UI change
 		//validate => function OR boolean returning true or false based on validation state

@@ -1,0 +1,72 @@
+//Completed
+
+October
+	Began Oct. 12
+
+	Oct 12 - Oct 16:
+		- Conceptualizing and diagramming
+		- Creating entities
+
+	Oct 19 - Oct 23:
+		- Initial database schema creation
+		- Began front and back end prototyping
+
+	Oct 26 - Oct 30:
+		- Index page prototype
+		- Created back-end entity models
+		- Created API service
+
+November
+	Nov 2 - Nov 6:
+		- Scrapped original front-end prototype (wrong track)
+		- Extensive work on back-end models
+
+	Nov 9 - Nov 13:
+		- Completed and tested entity models
+		- Began work on front-end prototyping
+
+	Nov 16 - Nov 20:
+		- Continued work on second front-end prototype
+		- Completed prototype of index interface
+
+
+//Projected
+
+November/December
+	Nov 23 - Nov 25:
+		- Convert initial index prototype to AJAX API cal
+
+	Nov 30 - Dec 11:
+		- Integrate session-tracking logic into prototype
+		- Expand API service
+		- Begin prototyping agenda-building interface
+
+January/Feb
+	Jan 25 - Feb 5:
+		- Finish agenda-building interface prototype
+		- Build review-agenda interface
+
+	Feb 8 - Feb 19:
+		- Prototype student information form
+		- Build database interaction into prototype (create agenda, items and student)
+		- Send confirmation email on form submit
+
+	Feb 22 - Feb 26:
+		- Create cancel (and possibly edit) appointment api
+		- Add appointment controls to confirmation email
+		- Begin prototyping cancel/edit appointment interfaces
+
+March
+	Feb 29 - Mar 4:
+		- Prototype testing
+		- Begin styling and optimization
+
+	Mar 7 - Mar 18:
+		- Styles and optimization
+
+	Mar 21 - Mar 31:
+		- Complete any additional necessary tasks
+
+April
+	Apr 1:
+		- April fools! I reveal that I haven't actually written even one line of code this entire time.
