@@ -46,6 +46,15 @@ class Room {
 		$this->roomTitle      = ( array_key_exists('RoomTitle', $params) )      ? $params['RoomTitle'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$roomList = [];          //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $roomList, new self($r) );
+		}
+		return $roomList;        //and return it.
+	}
+
 
 // ========== Static Methods ========== //
 	public static function ListByBuildingAbbrev ( $buildingAbbrev ) {
@@ -60,16 +69,8 @@ class Room {
 		//If Rooms were successfully pulled from database..
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//create a new array..
-			$roomList = [];
-
-			//populate it with Room objects..
-			foreach ( $arr as $r ) {
-				array_push( $roomList, new self( $r ) );
-			}
-
-			//and return it.
-			return $roomList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//Query was unsuccessful

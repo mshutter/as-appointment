@@ -1,4 +1,164 @@
-// Contains JavaScript dependencies specific to this app..
+// =========================
+// Initialization
+// =========================
+
+
+// ========== Initialize 'filters' UI ========== //
+function initFilters() {
+		initDatepicker();
+		initDialog();
+		initFilterButtons();
+		initDropdowns();
+}
+
+
+	// Initialize appt filter date selector
+	function initDatepicker () {
+		$('#input-date').datepicker({
+			dateFormat: "m/d/yy",
+			minDate: 0
+		});
+
+		$('.ui-datepicker-next').removeClass('ui-datepicker-next');
+		$('.ui-datepicker-prev').removeClass('ui-datepicker-prev');
+
+		//Focus hidden date input on button click (opens datepicker)
+		$('#btn-date').click(function () {
+			$('#input-date').toggleClass('hidden',false).focus().toggleClass('hidden',true);
+		});
+	}
+
+
+	// Initialize appt filter "add department" dialog
+	function initDialog () {
+
+		//1. Move #dept-list to bottom of body (outside container)
+
+			var dialogHTML = $('#dept-list').html(); //Get html of dept list
+			$('#dept-list').remove();                //Remove existing element
+			//Create HTML elements for underlay and dialog box
+			$('body').append('<div class="appt-dialog-underlay"></div>')
+			$('body').append('<div id="dept-dialog"></div>');
+			//Populate #dept-dialog with dialog and add class for UI
+			$('#dept-dialog').html(dialogHTML).addClass('appt-dialog');
+
+		//2. Configure open/close dialog UI changes
+
+			//Open dialog
+			$('#add-dept').click(function () {
+				$('body').toggleClass('dialogIsOpen', true);
+			});
+
+			//Close Dialog (underlay and close button)
+			$('.appt-dialog-underlay').click(function () {
+				$('body').toggleClass('dialogIsOpen', false);
+			});
+
+		//3. Configure addDeptFilter onclick UI
+
+			$('.select-dept').click(function () {
+				var deptID = $(this).attr('data-dept');
+				if ( !$("#dept-"+deptID).length ) {
+					addDeptFilter(deptID);
+					$('body').toggleClass('dialogIsOpen', false);
+				}
+			});
+	}
+
+
+	// Initialize appt filter button UI
+	function initFilterButtons () {
+
+	 //Bind UI change to Date selection
+		$('#input-date').change(function (event) {
+			validationUIHandler(
+				//Context for UI change
+				$('#btn-date'),
+
+				//validation: if input is a valid date
+				function () {
+					//Check if JavaScript is able to interpret the input as a date
+					var input = $('#input-date').val();
+					var check = new Date( input );
+
+					//If the input matches JavaScript's interpretation of itself
+					if ( input === check.toLocaleDateString("en-US") ) {
+						return true;
+					}
+					else return false;
+				},
+
+				//UI execution
+				function ( context, state ) {
+					context
+						.toggleClass('btn-primary', !state)
+						.toggleClass('btn-success', state);
+					if (state) {
+						context.children('*[data-role="display-value"]')
+							.html( $('#input-date').val() );
+					}
+				}
+			);
+		});
+
+
+	 //Bind UI change to Campus Tour selection
+		$('#input-campusTour').change(function () {
+			validationUIHandler(
+				//Context for UI change
+				$('#btn-campusTour'),
+
+				//validation
+				$(this).prop('checked'),
+
+				//UI execution
+				function ( context, state ) {
+					context
+						.toggleClass('btn-primary', !state)
+						.toggleClass('btn-success', state);
+					//console.log(state); //DEBUG
+				}
+			);
+		});
+
+
+		//Bind UI change to Faculty/Staff Appt selection
+		$('input[id^="option-facStaff"]').change(function () {
+			validationUIHandler(
+				//Context for UI change
+				$('#btn-facStaffAppt'),
+
+				//validation: if any any faculty/staff appointments were selected
+				function () {
+					var state = false
+					$('input[id^="option-facStaff"]').each(function () {
+						if ( $(this).prop('checked') ) {
+							state = true;
+							return;
+						}
+					});
+					return state;
+				},
+
+				//UI execution
+				function ( context, state ) {
+					context
+						.toggleClass('btn-primary', !state)
+						.toggleClass('btn-success', state);
+					//console.log(state); //DEBUG
+				}
+			);
+		});
+	}
+
+
+// Initialize dropdowns
+function initDropdowns() {
+  $('*[data-role="dropdown-toggle"]').click(function () {
+    toggleDropdown( $(this).attr('data-dropdown') );
+  });
+}
+
 
 
 // =========================
@@ -41,13 +201,6 @@ function toggleDropdown ( dropdownId ) {
 	//     toggleDropdown( $(this).attr('data-dropdown') );
 	//   });
 
-// ========== Initialize dropdowns ========== //
-function initDropdowns() {
-  $('*[data-role="dropdown-toggle"').click(function () {
-    toggleDropdown( $(this).attr('data-dropdown') );
-  });
-}
-
 
 
 // =========================
@@ -70,114 +223,6 @@ function validationUIHandler (context, validate, execute) {
 		execute( context, state );
 	}
 
-
-
-// =========================
-// Initialize DatePicker
-// =========================
-
-function initDatepicker () {
-
-	$('#input-date').datepicker({
-		dateFormat: "m/d/yy",
-		minDate: 0
-	});
-
-	//Focus hidden date input on button click (opens datepicker)
-	$('#btn-date').click(function () {
-		$('#input-date').toggleClass('hidden',false).focus().toggleClass('hidden',true);
-	});
-}
-
-
-
-// =========================
-// Initialize filter buttons
-// =========================
-
-function initFilterButtons () {
-
- //Bind UI change to Date selection
-	$('#input-date').change(function () {
-		validationUIHandler(
-			//Context for UI change
-			$('#btn-date'),
-
-			//validation: if input is a valid date
-			function () {
-				//Check if JavaScript is able to interpret the input as a date
-				var input = $('#input-date').val();
-				var check = new Date( input );
-
-				//If the input matches JavaScript's interpretation of itself
-				if ( input === check.toLocaleDateString("en-US") ) {
-					return true;
-				}
-				else return false;
-			},
-
-			//UI execution
-			function ( context, state ) {
-				context
-					.toggleClass('btn-primary', !state)
-					.toggleClass('btn-success', state);
-				if (state) {
-					context.children('*[data-role="display-value"]')
-						.html( $('#input-date').val() );
-				}
-			}
-		);
-	});
-
-
- //Bind UI change to Campus Tour selection
-	$('#input-campusTour').change(function () {
-		validationUIHandler(
-			//Context for UI change
-			$('#btn-campusTour'),
-
-			//validation
-			$(this).prop('checked'),
-
-			//UI execution
-			function ( context, state ) {
-				context
-					.toggleClass('btn-primary', !state)
-					.toggleClass('btn-success', state);
-				//console.log(state); //DEBUG
-			}
-		);
-	});
-
-
-	//Bind UI change to Faculty/Staff Appt selection
-	$('input[id^="option-facStaff"]').change(function () {
-		validationUIHandler(
-			//Context for UI change
-			$('#btn-facStaffAppt'),
-
-			//validation: if any any faculty/staff appointments were selected
-			function () {
-				var state = false
-				$('input[id^="option-facStaff"]').each(function () {
-					if ( $(this).prop('checked') ) {
-						state = true;
-						return;
-					}
-				});
-				return state;
-			},
-
-			//UI execution
-			function ( context, state ) {
-				context
-					.toggleClass('btn-primary', !state)
-					.toggleClass('btn-success', state);
-				//console.log(state); //DEBUG
-			}
-		);
-	});
-}
 
 
 // =========================
@@ -245,6 +290,10 @@ function addDeptFilter ( deptID ) {
 			$('#rmv-dept-'+deptID).click(function () {
 				removeElement('#dept-'+deptID);
 			});
+
+
+			//Open dropdopwn
+			toggleDropdown("dropdown-dept-"+deptID);
 		}
 
 	});
@@ -260,7 +309,7 @@ function renderDeptFilter ( deptJSON ) {
 
 		// Button
 	    html += '<label id="btn-'+htmlID+'" class="btn btn-primary col-xs-11" data-role="dropdown-toggle" data-dropdown="dropdown-'+htmlID+'">';
-	    html += '<input type="hidden" name="departmentID" value="'+dept.departmentID+'" />';
+	    html += '<input type="hidden" name="departmentID[]" value="'+dept.departmentID+'" />';
 	    html += dept.title;
 	    html += '&nbsp;<i class="glyphicon glyphicon-menu-down"></i></label>';
 
@@ -275,7 +324,7 @@ function renderDeptFilter ( deptJSON ) {
 
 			dept.Curriculums.forEach(function (curr, i, arr) {
 				html += '<label class="btn btn-default appt-dropdown-item">';
-				html += '<input id="option-curr-'+curr.curriculumID+'" type="checkbox" name="curriculumID" value="'+curr.curriculumID+'" />';
+				html += '<input id="option-curr-'+curr.curriculumID+'" type="checkbox" name="curriculumID[]" value="'+curr.curriculumID+'" />';
 				html += '&nbsp;'+curr.title;
 				html += '</label>';
 			});

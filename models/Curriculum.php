@@ -20,7 +20,11 @@
 
 	Static Methods
 		::GetByCurriculumID( $curriculumID )
-			- Returns complete Curriculum object matching $curriculumID
+			* Retrieves curriculum(s) from database by CurriculumID
+			* @param mixed $curriculumID Either a single curriculumID or an array of curriculumIDs
+			*
+			* @return Curriculum object or array of Curriculum objects according to
+			*         type of $curriculumID param
 
 		::ListAllCurriculums()
 			- Return array of all Curriculums
@@ -58,7 +62,7 @@ class Curriculum {
 	}
 
 
-// ========== Constructor ========== //	
+// ========== Constructors ========== //	
 	private function __construct( $params ) {
 
 		//Assign variables if they exist in $params array
@@ -66,6 +70,15 @@ class Curriculum {
 		$this->departmentID = ( array_key_exists('DepartmentID', $params) ) ? $params['DepartmentID'] : null;
 		$this->title        = ( array_key_exists('Title', $params) )        ? $params['Title'] : null;
 		$this->description  = ( array_key_exists('Description', $params) )  ? $params['Description'] : null;
+	}
+
+	private static function construct_multiple( $arr ) {
+
+		$curriculumList = [];    //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $curriculumList, new self($r) );
+		}
+		return $curriculumList;  //and return it.
 	}
 
 
@@ -103,16 +116,8 @@ class Curriculum {
 		//If Curriculums were successfully retrieved from DB..	
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//create an array that will hold them..
-			$curriculumList = [];
-
-			//populate it with Curriculum objects..
-			foreach ( $arr as $r ) {
-				array_push( $curriculumList, new self($r) );
-			}
-
-			//and return it.
-			return $curriculumList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//If no Curriculums were retrieved from the DB:
@@ -133,16 +138,8 @@ class Curriculum {
 		//If Curriculums were successfully retrieved..
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//create an array to hold them..
-			$curriculumList = [];
-
-			//populate it with Curriculum objects..
-			foreach ( $arr as $r ) {
-				array_push( $curriculumList, new self($r) );
-			}
-
-			//and return it.
-			return $curriculumList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//If no Curriculums were retrieved:

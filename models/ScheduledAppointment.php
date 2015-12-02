@@ -91,6 +91,15 @@ class ScheduledAppointment {
 		$this->isPrivate    = ( array_key_exists('IsPrivate', $params) )    ? $params['IsPrivate'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$schedApptList = [];     //Create new list,
+		foreach ( $arr as $r ) { //populate it with ScheduledAppointment objects,
+			array_push( $schedApptList, new self($r) );
+		}
+		return $schedApptList;   //and return it.
+	}
+
 
 
 // ========== Instance Methods ========== //
@@ -196,16 +205,8 @@ class ScheduledAppointment {
 		//On query success..
 		if ( $arr = $stmt->fetchAll( PDO::FETCH_ASSOC ) ) {
 
-			//create a new list to hold appts..
-			$schedApptList = [];
-
-			//populate it..
-			foreach ($arr as $r) {
-				array_push( $schedApptList, new self( $r ) );
-			}
-
-			//and return it.
-			return $schedApptList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//Return false on failure.

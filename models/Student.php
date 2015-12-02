@@ -75,6 +75,15 @@ class Student {
 		$this->highSchool     = ( array_key_exists('HighSchool', $params) )     ? $params['HighSchool'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$studentList = [];       //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $studentList, new self($r) );
+		}
+		return $studentList;     //and return it.
+	}
+
 
 // ========== Static Methods ========== //
 	public static function GetByStudentID ( $studentID, $extendedInfo = false ) {

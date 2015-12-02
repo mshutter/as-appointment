@@ -6,6 +6,16 @@
           border-radius: 0 !important;
 }
 
+#main-container,
+.appt-dialog {
+	//Transition effects (i.e. dialog box opening)
+	-webkit-transition: all .5s ease;
+	   -moz-transition: all .5s ease;
+	     -o-transition: all .5s ease;
+	        transition: all .5s ease;
+}
+
+
 //Simple display and structuring classes
 .hidden {
 	display: none; }
@@ -19,11 +29,162 @@
 	height: 1em; }
 
 
-//Styles for dropdowns
+
+// ========== Dropdown Styles ========== //
 *[data-role='dropdown-container'] {
 	display: none;
 }
 .appt-dropdown-item {
 	width: 100%;
 	text-align: left;
+}
+
+
+
+// ========== Dialog Styles ========== //
+
+.appt-dialog {
+	
+	.appt-dialog-header {
+
+		border-bottom: 1px solid #eee;
+		
+		h3 {
+			display: inline-block;
+			margin: 15px 0 15px 1.1em;
+		}
+
+		.glyphicon-remove {
+			cursor: pointer;
+			color: #ccc;
+			font-size: 1.2em;
+			display: block;
+			float: right;
+			margin: 1.1em 1.1em 0 0;
+			
+			&:hover {
+				color: #aaa;
+			}
+		}
+	}
+	
+	.appt-dialog-content {
+		padding: 1.1em;
+		overflow: auto;
+		
+		label,
+		label > * {
+			-webkit-transition: all .3s ease;
+			   -moz-transition: all .3s ease;
+			     -o-transition: all .3s ease;
+			        transition: all .3s ease;
+		}
+
+		label {
+			cursor: pointer;
+			color: #31708f;
+			margin: .4em 0;
+			
+			i {
+				padding: 0 .3em 0 .1em;
+				color: #eea236;
+			}
+			
+			&:hover {
+				color: #eea236;
+				
+				i {
+					padding: 0 .1em 0 .3em;
+				}	
+			}
+		}	
+	}	
+}
+
+
+// Default state
+// =============
+	
+	.appt-dialog {
+		width: 90%;
+	  margin: 0 0 0 -45%;
+	}
+
+	.appt-dialog-underlay {
+		
+		//overlay the container
+		background-color: #428bca; 
+		position: absolute;
+		left: 0px;
+		top: 0px;
+		
+		//Hidden
+	  opacity: 0;
+	}
+
+	.appt-dialog {
+		background: white;
+
+	  position: fixed;
+	  top: 200%;
+	  left: 50%;
+		
+		//Embiggen
+	  -webkit-transform: scale(1.5);
+	      -ms-transform: scale(1.5);
+	          transform: scale(1.5);
+	}
+
+
+// Open state
+// ==========
+	
+	.dialogIsOpen {
+
+		#main-container {
+			opacity: 0.3;
+			 
+			//Blur and de-color
+		  -webkit-filter: blur(3px) grayscale(40%);
+
+		  //Recede
+		  -webkit-transform: scale(0.9);
+			    -ms-transform: scale(0.9);
+			        transform: scale(0.9);
+		}
+
+		// Show underlay and dialog
+		.appt-dialog-underlay {
+			opacity: 0.5;
+			height: 100%;
+			width: 100%;
+		}
+
+		.appt-dialog {	
+			// Regular size and visible
+		  -webkit-transform: scale(1);
+			    -ms-transform: scale(1);
+			        transform: scale(1);
+		   
+		  top: 20%;
+		}
+	}
+
+	
+
+//Hack to fix bizzare redirect error in firefox
+//Substitutes prev/next arrow images on jquery Datepicker with icons 
+.ui-datepicker-next,
+.ui-datepicker-prev {
+	font-family: "Glyphicons Halflings";
+	padding-top: .15em;
+	background: none;
+}
+.ui-datepicker-next:before {
+	padding-left: .4em;
+	content: "\e250";
+}
+.ui-datepicker-prev:before {
+	padding-left: .3em;
+	content: "\e251";
 }

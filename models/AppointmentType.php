@@ -50,6 +50,15 @@ class AppointmentType {
 		$this->description = ( array_key_exists('Description', $params) ) ? $params['Description'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$apptTypeList = [];      //Create new list,
+		foreach ( $arr as $r ) { //populate it with AppointmentType objects,
+			array_push( $apptTypeList, new self($r) );
+		}
+		return $apptTypeList;    //and return it.
+	}
+
 
 // ========== Static Methods ========== //
 	public static function GetByApptTypeID ( $apptTypeID ) {
@@ -91,16 +100,8 @@ class AppointmentType {
 		//If ApptTypes were successfully pulled from database..
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//create an array that will hold them..
-			$appointmentTypeList = [];
-
-			//populate it with ApptType objects..
-			foreach ( $arr as $r ) {
-				array_push( $appointmentTypeList, new self($r) );
-			}
-
-			//and return it.
-			return $appointmentTypeList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//If no ApptTypes were retrieved from DB:

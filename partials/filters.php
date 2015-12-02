@@ -3,6 +3,10 @@
 	jQuery, jQuery-ui, appt.js
 */
 
+// ========== Get list of departments ========== //
+require_once 'models/Department.php';
+$deptList = Department::ListAllDepartments();
+
 // ========== Get faculty/staff appointments ========== //
 require_once 'models/AppointmentType.php';
 $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
@@ -27,7 +31,7 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 		Input: Campus Tour -->
 
 		<label id="btn-campusTour" class="btn btn-primary col-xs-12">
-			<input class="hidden" id='input-campusTour' type="checkbox" name="apptType" value="2" />
+			<input class="hidden" id='input-campusTour' type="checkbox" name="apptType[]" value="2" />
 			Tour Our Campus
 		</label>
 		<div class='row-space'></div>
@@ -46,7 +50,7 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 			<?php foreach ( $facStaffAppts as $type ) : ?>		
 
 			<label class="btn btn-default appt-dropdown-item">
-				<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptType" value="<?php echo $type->apptTypeID; ?>" />
+				<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptType[]" value="<?php echo $type->apptTypeID; ?>" />
 				<?php echo $type->title; ?>
 			</label>
 
@@ -65,9 +69,33 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 		<!-- AJAX context for department filters -->
 	</div>
 
-	<a href="#">
+	<a id="add-dept" href="#">
 		<i class="glyphicon glyphicon-plus"></i>
 		Explore a Program
 	</a>
+	
+	<?php
+		//NOTE:
+		//#dept-list will be moved to the bottom of the body tag.
+		//See appt.js->initDialog() ?>
+
+	<div id="dept-list" hidden>
+		<div class="appt-dialog-header">
+			<h3>Choose a Department</h3>
+			<i class="glyphicon glyphicon-remove"></i>
+		</div>
+
+		<div class="appt-dialog-content">
+			<?php foreach ( $deptList as $dept ) : ?>
+			
+			<label class="select-dept col-xs-12" data-dept="<?php echo $dept->departmentID; ?>">
+				<i class="glyphicon glyphicon-plus"></i>
+				<?php echo $dept->title; ?>
+			</label>
+			<br />
+
+			<?php endforeach; ?>	
+		</div>
+	</div>
 
 	<hr />

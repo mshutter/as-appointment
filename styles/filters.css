@@ -4,6 +4,13 @@
   -moz-border-radius: 0 !important;
   border-radius: 0 !important; }
 
+#main-container,
+.appt-dialog {
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease; }
+
 .hidden {
   display: none; }
 
@@ -23,5 +30,90 @@
 .appt-dropdown-item {
   width: 100%;
   text-align: left; }
+
+.appt-dialog .appt-dialog-header {
+  border-bottom: 1px solid #eee; }
+  .appt-dialog .appt-dialog-header h3 {
+    display: inline-block;
+    margin: 15px 0 15px 1.1em; }
+  .appt-dialog .appt-dialog-header .glyphicon-remove {
+    cursor: pointer;
+    color: #ccc;
+    font-size: 1.2em;
+    display: block;
+    float: right;
+    margin: 1.1em 1.1em 0 0; }
+    .appt-dialog .appt-dialog-header .glyphicon-remove:hover {
+      color: #aaa; }
+.appt-dialog .appt-dialog-content {
+  padding: 1.1em;
+  overflow: auto; }
+  .appt-dialog .appt-dialog-content label,
+  .appt-dialog .appt-dialog-content label > * {
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease; }
+  .appt-dialog .appt-dialog-content label {
+    cursor: pointer;
+    color: #31708f;
+    margin: .4em 0; }
+    .appt-dialog .appt-dialog-content label i {
+      padding: 0 .3em 0 .1em;
+      color: #eea236; }
+    .appt-dialog .appt-dialog-content label:hover {
+      color: #eea236; }
+      .appt-dialog .appt-dialog-content label:hover i {
+        padding: 0 .1em 0 .3em; }
+
+.appt-dialog {
+  width: 90%;
+  margin: 0 0 0 -45%; }
+
+.appt-dialog-underlay {
+  background-color: #428bca;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  opacity: 0; }
+
+.appt-dialog {
+  background: white;
+  position: fixed;
+  top: 200%;
+  left: 50%;
+  -webkit-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  transform: scale(1.5); }
+
+.dialogIsOpen #main-container {
+  opacity: 0.3;
+  -webkit-filter: blur(3px) grayscale(40%);
+  -webkit-transform: scale(0.9);
+  -ms-transform: scale(0.9);
+  transform: scale(0.9); }
+.dialogIsOpen .appt-dialog-underlay {
+  opacity: 0.5;
+  height: 100%;
+  width: 100%; }
+.dialogIsOpen .appt-dialog {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  top: 20%; }
+
+.ui-datepicker-next,
+.ui-datepicker-prev {
+  font-family: "Glyphicons Halflings";
+  padding-top: .15em;
+  background: none; }
+
+.ui-datepicker-next:before {
+  padding-left: .4em;
+  content: "\e250"; }
+
+.ui-datepicker-prev:before {
+  padding-left: .3em;
+  content: "\e251"; }
 
 /*# sourceMappingURL=filters.css.map */

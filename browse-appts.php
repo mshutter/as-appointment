@@ -5,49 +5,32 @@
 	 */
 
 
-/**
- * Controller
- *************************/
-
-// If apptType has not been selected or is negative (default value)..
-if ( ( !isset( $_POST['apptType'] ) || intval( $_POST['apptType'] ) < 0 ) && !isset( $_SESSION['apptType'] ) ) {
-
-	// Redirect user back to index
+//Redirect user back to index if date and apptType has not been selected
+if ( !isset( $_POST['apptType'] ) && !isset( $_SESSION['apptType'] ) ) {
+	header('Location: .');
+}
+if ( !isset( $_POST['date'] ) && !isset( $_SESSION['date'] ) ) {
 	header('Location: .');
 }
 
-// If datePref has not been selected..
-if ( !isset( $_POST['datePref'] ) && !isset( $_SESSION['datePref'] ) ) {
-
-	// Redirect user back to index
-	header('Location: .');
-}
-
-
+//Assign form values to $_SESSION
 //apptType
 if ( isset( $_POST['apptType'] ) )
 	$_SESSION['apptType'] = $_POST['apptType'];
 
-//datePref
-if ( isset( $_POST['datePref'] ) )
-	$_SESSION['datePref'] = strtotime( $_POST['datePref'] );
-else 
-	$_SESSION['datePref'] = time();
+//date
+if ( isset( $_POST['date'] ) )
+	$_SESSION['date'] = strtotime( $_POST['date'] );
+if ( !isset( $_SESSION['date'] ) )
+	$_SESSION['date'] = time();
 
-//deptID
-if ( isset( $_POST['deptID'] ) ) {
-	$_SESSION['deptID'] = $_POST['deptID'];
-}
+//departmentID
+if ( isset( $_POST['departmentID'] ) ) 
+	$_SESSION['departmentID'] = $_POST['departmentID'];
 
-//currID
-if ( isset( $_POST['currID'] ) ) {
-	$_SESSION['currID'] = $_POST['currID'];
-}
-
-//if apptType is not 3 (department tour), set currID to -1
-if ( $_SESSION['apptType'] != '3' ) {
-	$_SESSION['currID'] = '-1';
-}
+//curriculumID
+if ( isset( $_POST['curriculumID'] ) )
+	$_SESSION['curriculumID'] = $_POST['curriculumID'];
 
 
 
@@ -56,33 +39,11 @@ include 'partials/preHeader.php';
 $title = "Step Two";
 include 'partials/header.php';
 
-
-require_once 'models/StudentAppointment.php';
-
-// If student has already started making an appointment 
-if ( isset( $_SESSION['studentApptID'] ) ) {
-
-	// Then load up that appointment
-	$appt = new StudentAppointment( $_SESSION['studentApptID'] );
-}
-
-else {
-	// ...or else, create a new one
-	$appt = new StudentAppointment();
-}
-
-// Pass appointment ID to session scope
-$_SESSION['studentApptID'] = $appt->getApptID();
-
-
-
-/**
- * View
- *************************/ ?>
+?>
 
 <div id='appt-container'>
 	<div class="appt-header">
-		<h2><?php echo date( 'F Y', $_SESSION['datePref'] ) ?></h2>
+		<h2><?php echo date( 'F Y', $_SESSION['date'] ) ?></h2>
 
 		<nav id='appt-nav-days'>
 			<!-- AJAX will populate this with navigation items for each day -->
@@ -91,6 +52,20 @@ $_SESSION['studentApptID'] = $appt->getApptID();
 
 	<div class='appt-content'>
 		<!-- AJAX will populate this with appointments that match filters -->
+	
+		<?php
+			/* DEBUG * /
+			echo '<strong>Request</strong>';
+			echo '<pre>';
+			print_r($_REQUEST);
+			echo '</pre>';
+
+			echo '<strong>Request</strong>';
+			echo '<pre>';
+			print_r($_SESSION);
+			echo '</pre>';
+			// */
+		?>
 	</div>
 </div>
 

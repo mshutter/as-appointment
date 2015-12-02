@@ -55,6 +55,15 @@ class Building {
 		$this->isOnAlfredCampus = ( array_key_exists('IsOnAlfredCampus', $params) ) ? (bool)$params['IsOnAlfredCampus'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$buildingList = [];      //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $buildingList, new self($r) );
+		}
+		return $buildingList;    //and return it.
+	}
+
 
 // ========== Instance Methods ========== //
 	public function GetRooms () {
@@ -108,17 +117,8 @@ class Building {
 		//If the query was successful in fetching results
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//Create a list for the buildings..
-			$buildingList = [];
-
-			//and for each building..
-			foreach ( $arr as $r ) {
-
-				//populate the list.
-				array_push( $buildingList, new self( $r ) );
-			}
-
-			return $buildingList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//If query did not find any results:

@@ -55,6 +55,15 @@ class Department {
 		$this->description  = ( array_key_exists('Description', $params) )  ? $params['Description'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$departmentList = [];    //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $departmentList, new self($r) );
+		}
+		return $departmentList;  //and return it.
+	}
+
 
 // ========== Instance Methods ========== //
 	public function GetCurriculums() {
@@ -90,16 +99,8 @@ class Department {
 		//If query was successful in retrieving Departments..
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
-			//create an array to hold them..
-			$departmentList = [];
-
-			//populate it..
-			foreach ( $arr as $r ) {
-				array_push( $departmentList, new self( $r ) );
-			}
-
-			//and return it.
-			return $departmentList;
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//If no departments were retrieved from DB:

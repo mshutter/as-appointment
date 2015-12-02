@@ -53,6 +53,15 @@ class StudentAgenda {
 		$this->studentID = ( array_key_exists('StudentID', $params) ) ? $params['StudentID'] : null;
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$curriculumList = [];    //Create new list,
+		foreach ( $arr as $r ) { //populate it with Curriculum objects,
+			array_push( $curriculumList, new self($r) );
+		}
+		return $curriculumList;  //and return it.
+	}
+
 
 // ========== Instance Methods ========== //
 	public function GetAgendaItems ( $extendedInfo = false ) {
@@ -98,13 +107,9 @@ class StudentAgenda {
 
 		//Query was successful
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
-			$agendaList = [];
-
-			foreach ( $arr as $r ) {
-				array_push( $agendaList, new self( $r ) );
-			}
-
-			return $agendaList;
+			
+			//Construct and return an array from the data
+			return self::construct_multiple( $arr );
 		}
 
 		//Query was unsuccessful
