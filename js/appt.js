@@ -50,7 +50,7 @@ function initFilters() {
 			});
 
 			//Close Dialog (underlay and close button)
-			$('.appt-dialog-underlay').click(function () {
+			$('.appt-dialog-underlay, .appt-dialog-close').click(function () {
 				$('body').toggleClass('dialogIsOpen', false);
 			});
 
@@ -309,6 +309,7 @@ function renderDeptFilter ( deptJSON ) {
 
 		// Button
 	    html += '<label id="btn-'+htmlID+'" class="btn btn-primary col-xs-11" data-role="dropdown-toggle" data-dropdown="dropdown-'+htmlID+'">';
+	    html += '<input type="hidden" name="apptTypeID[]" value="3" />';
 	    html += '<input type="hidden" name="departmentID[]" value="'+dept.departmentID+'" />';
 	    html += dept.title;
 	    html += '&nbsp;<i class="glyphicon glyphicon-menu-down"></i></label>';

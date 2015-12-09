@@ -3,7 +3,7 @@
 
 if ( !isset( $_GET['d'] ) || !( $date = strtotime( $_GET['d'] ) ) ) {
 	//set $date to equal $_GET['d'] or the current date
-	$date = ( isset( $_SESSION['datePref'] ) ) ? $_SESSION['datePref'] : time();
+	$date = ( isset( $_SESSION['date'] ) ) ? $_SESSION['date'] : time();
 }
 
 

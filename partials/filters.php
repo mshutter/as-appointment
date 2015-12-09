@@ -31,7 +31,7 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 		Input: Campus Tour -->
 
 		<label id="btn-campusTour" class="btn btn-primary col-xs-12">
-			<input class="hidden" id='input-campusTour' type="checkbox" name="apptType[]" value="2" />
+			<input class="hidden" id='input-campusTour' type="checkbox" name="apptTypeID[]" value="2" />
 			Tour Our Campus
 		</label>
 		<div class='row-space'></div>
@@ -50,7 +50,7 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 			<?php foreach ( $facStaffAppts as $type ) : ?>		
 
 			<label class="btn btn-default appt-dropdown-item">
-				<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptType[]" value="<?php echo $type->apptTypeID; ?>" />
+				<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptTypeID[]" value="<?php echo $type->apptTypeID; ?>" />
 				<?php echo $type->title; ?>
 			</label>
 
@@ -82,7 +82,7 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 	<div id="dept-list" hidden>
 		<div class="appt-dialog-header">
 			<h3>Choose a Department</h3>
-			<i class="glyphicon glyphicon-remove"></i>
+			<i class="glyphicon glyphicon-remove appt-dialog-close"></i>
 		</div>
 
 		<div class="appt-dialog-content">

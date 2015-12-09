@@ -25,9 +25,8 @@ $dept->GetCurriculums();
 </head>
 <body>
 
-<div class="btn btn-primary appt-chk-btn" style="font-size:1.3em;">
-	<i class='glyphicon glyphicon-record'></i>
-</div>
+<pre class="debug">
+</pre>
 
 <div class="container">
 	<h1>Pay Us a Visit</h1>
@@ -111,6 +110,13 @@ $dept->GetCurriculums();
 	
 <script>
 	window.onload = function () {
+
+		//Testing successive assignment operators
+			a = 'a';
+			b = 'b';
+			test = b = a;
+			$('.debug').html(b);
+
 		initDropdowns();
 		initButtons();
 

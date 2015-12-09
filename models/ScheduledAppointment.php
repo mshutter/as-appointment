@@ -159,14 +159,12 @@ class ScheduledAppointment {
 				$qry .= ' AND `CurriculumID` = :currID';
 		}
 
-
 		//if a valid date has been passed
 		if ( strtotime( $date ) ) {
 
-			//properly format the date and add filter it to query string
+			//properly format the date and add it to query string
 			$date = date( 'Y-m-d', strtotime( $date ) ).' 00:00:00';
 			$qry .= " AND `TimeStart` >= :date";
-
 
 			//if an end date has also been provided
 			if ( strtotime( $endDate ) ) {
@@ -174,10 +172,9 @@ class ScheduledAppointment {
 				//properly format endDate..
 				$endDate = date( 'Y-m-d', strtotime( $endDate ) ).' 23:59:59';
 
-				//and append it to query string
+				//and add it to query string
 				$qry .= ' AND `TimeEnd` <= :endDate';
 			}
-
 
 			//if an end date has not been explicitly provided
 			else {
@@ -185,11 +182,10 @@ class ScheduledAppointment {
 				//set $endDate to equal the end of day: $date 
 				$endDate = date( 'Y-m-d', strtotime( $date ) ).' 23:59:59';
 
-				//and append it to the query
+				//and add it to the query string
 				$qry .= ' AND `TimeEnd` <= :endDate';
 			}
 		}
-
 
 		//prepare query for execution
 		$stmt = self::$conn->prepare($qry);

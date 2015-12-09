@@ -10,20 +10,23 @@ include 'partials/header.php';
 ?>
 
 
-
-<h2>Pay Us a Visit</h2>
-
-<form class="appt-filters" action="browse-appts.php" method="POST">
-
-	<div id='error-display'>
-		<!-- Display for validation errors -->
+<div class="appt-container">
+	<div class="appt-header">
+		<h2>Pay Us a Visit</h2>
 	</div>
-
-	<?php require_once 'partials/filters.php' ?>
-
-	<input type="submit" class="btn btn-warning" value='Get Started' />	
 	
-</form>
+	<div class="appt-content">
+		<form class="appt-filters" action="browse-appts.php" method="POST">
+			<div id='error-display'>
+				<!-- Display for validation errors -->
+			</div>
+
+			<?php require_once 'partials/filters.php' ?>
+
+			<input type="submit" class="btn btn-warning" value='Get Started' />	
+		</form>		
+	</div>
+</div>
 
 
 
