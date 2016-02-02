@@ -9,7 +9,7 @@ function initFilters() {
 		initDialog();
 		initFilterButtons();
 		initDropdowns();
-}
+	}
 
 
 	// Initialize appt filter date selector

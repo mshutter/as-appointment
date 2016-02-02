@@ -50,7 +50,7 @@ class AppointmentType {
 		$this->description = ( array_key_exists('Description', $params) ) ? $params['Description'] : null;
 	}
 
-	private static function construct_multiple( $arr ) {
+	private static function construct_multiple ( $arr ) {
 
 		$apptTypeList = [];      //Create new list,
 		foreach ( $arr as $r ) { //populate it with AppointmentType objects,

@@ -41,6 +41,14 @@
 
 
 	Static Methods
+		::NewSchedApptID()
+			- Returns a 10-digit alphanumeric string to uniquely identify a scheduled appointment in the DB
+			- Will automatically check DB to deliver a UID that is not already in use
+
+		::NewScheduledAppointment( $params )
+			- Returns a new ScheduledAppointment object based on params array, but with a unique SchedApptID
+			- $params is an array of key/value pairs corresponding with expected parameters of the constructor
+
 		::GetBySchedApptID( $schedApptID )
 			- Returns a single ScheduledAppointment object matching the specified $schedApptID
 
@@ -53,11 +61,13 @@
 */
 
 require_once 'Database.php';
+require_once 'UID.php';
 
 class ScheduledAppointment {
 
 // ========== Variables ========== //
 	private static $conn;
+	private static $UID;
 
 	public $schedApptID;
 	public $apptTypeID;
@@ -77,7 +87,7 @@ class ScheduledAppointment {
 	}
 
 
-// ========== Constructor ========== //	
+// ========== Constructor ========== //
 	private function __construct( $params ) {
 
 		//Assign variables if they exist in $params array
@@ -103,6 +113,22 @@ class ScheduledAppointment {
 
 
 // ========== Instance Methods ========== //
+	public function PushToDB () {
+		self::InitConnection();
+
+		if ( self::GetBySchedApptID( $this->schedApptID ) ) {
+			//this ScheduledAppointment is already in the database
+			echo 'Update';
+		}
+
+		else {
+			//this ScheduledAppointment is not in the database
+			echo 'Input';
+
+			$qry = 'INPUT INTO `ScheduledAppointment`';
+		}
+	}
+
 	public function GetAppointmentTypeDetails () {
 		require_once 'AppointmentType.php';
 		return $this->AppointmentType = AppointmentType::GetByApptTypeID( $this->apptTypeID );
@@ -116,11 +142,25 @@ class ScheduledAppointment {
 	public function GetStudentsAttending ( $extendedInfo = false ) {
 		require_once 'Student.php';
 		return $this->StudentsAttending = Student::ListBySchedApptID( $this->schedApptID, $extendedInfo );
-	}
+	}	
 
 
 
 // ========== Static Methods ========== //
+	private static function NewSchedApptID () {
+
+		//set UID generator with callback to verify SchedApptID will be unique
+		( !self::$UID ) ? self::$UID = new UID( ['ScheduledAppointment', 'GetBySchedApptID'] ) : null;
+		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
+	}
+
+
+	public static function NewScheduledAppointment ( $params ) {
+		$params['SchedApptID'] = self::NewSchedApptID();
+		return new self( $params );
+	}
+
+
 	public static function GetBySchedApptID ( $schedApptID ) {
 		self::InitConnection();
 
