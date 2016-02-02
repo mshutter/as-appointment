@@ -1,0 +1,21 @@
+Project Backlog
+	1. Generate test appts
+
+	2. Process available appt results
+
+	3. Add-to-itinerary functionality
+		- Come up with UI for this
+		- Check availability and overlap
+
+	4. Add on-the-fly filter changes
+
+	5. Build itinerary
+		- double check validity and overlap
+
+
+
+Sprint Backlog (Mon 1 -> mon 8)
+	1. Universal unique ID generator
+	2. Generate test appts
+	3. Process available appt results
+	4. Simple "add" UI response
