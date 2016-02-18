@@ -37,6 +37,8 @@
 	require_once '../models/AppointmentType.php';
 	require_once '../models/ScheduledAppointment.php';
 
+	//make apptTypeID an array if it is not already
+	( !is_array( $apptTypeID ) ) ? $apptTypeID = [ $apptTypeID ] : null;
 
 	//For each apptType
 	foreach ( $apptTypeID as $typeID ) {

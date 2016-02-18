@@ -1,8 +1,4 @@
 <?php session_start();
-	/**
-	 * TO-DO:
-	 * - Error handling for AJAX functions
-	 */
 
 
 //Redirect user back to index if date and apptTypeID has not been selected
@@ -13,7 +9,7 @@ if ( !isset( $_POST['date'] ) && !isset( $_SESSION['date'] ) ) {
 	header('Location: .');
 }
 
-//Assign form values to $_SESSION
+//Assign request values to $_SESSION
 //apptTypeID
 if ( isset( $_POST['apptTypeID'] ) )
 	$_SESSION['apptTypeID'] = array_unique( $_POST['apptTypeID'] );
@@ -50,16 +46,24 @@ include 'partials/header.php';
 		</nav>
 	</div>
 
+	<!-- Example Alert -->
+	<div class='alert alert-warning alert-dismissable'>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<strong>Campus Tour @ 12:00pm</strong> could not be added because it conflicts with <strong>Admissions @ 12:00pm</strong>.
+	</div>
+
+
 	<div class='appt-content'>
 		<!-- AJAX will populate this with appointments that match filters -->
 
 		<p class='alert alert-danger' role='alert'>
-			JavaScript is required to use this application. Please <a class="alert-link" href="http://www.enable-javascript.com/" target="_blank">enable JavaScript in
+			JavaScript is required to use this application. Please
+			<a class="alert-link" href="http://www.enable-javascript.com/" target="_blank">enable JavaScript in
 			your browser's settings</a> and refresh or try using a different browser.
 		</p>
 	
 		<?php
-			/* DEBUG */
+			/* DEBUG * /
 			echo '<strong>Request</strong>';
 			echo '<pre>';
 			print_r($_REQUEST);
@@ -77,13 +81,17 @@ include 'partials/header.php';
 
 
 <script>
+	var schedApptData = {
+		//will hold data about all scheduled appointments displayed on page 
+	};
+
 	window.onload = function () {
 
 		//initial creation of navigation of days
 		refreshUI();
 	};
 
-
+--
 	function refreshUI (args) {
 		
 		//if date has changed..
@@ -150,7 +158,7 @@ include 'partials/header.php';
 
 
 	function refreshContent (args) {
-		//if arguments have been passed..
+		//if arguments have been passed, build a new api request
 		if (args) {
 
 			//Create array to hold url query segments
@@ -206,9 +214,21 @@ include 'partials/header.php';
 	}
 
 	function renderContent (json) {
-		var html = '';
 		var data = JSON.parse(json);
-		console.log(data);
+		
+
+	//add each schedAppt in json to schedApptData object.
+	//this JavaScript object will be used to detect time conflicts while adding appts to itinerary.
+		data.forEach(function (val, i, arr) {
+			val.apptList.forEach(function (val, i, arr) {
+				schedApptData[val.schedApptID] = val;
+			})
+		});
+
+		console.log(schedApptData);
+
+	//construct view of each appointment returned
+		var html = '';
 
 		//for each appointment group in data
 		data.forEach(function (grp, i) {
@@ -230,16 +250,21 @@ include 'partials/header.php';
 			//For each appt within the group
 			grp.apptList.forEach(function (appt, i) {
 
-				//Add row with 
+				//Add row with..
 				html += '<tr>'
-				     + '<td>'+appt.timeStart+" - "+appt.timeEnd+'</td>'
-				     + '<td>'+(appt.title ? appt.title : ' ')+'</td>'
+				     + '<td>'+appt.timeStart+" - "+appt.timeEnd+'</td>'     //time (start - end)
+				     + '<td>'+(appt.title ? appt.title : ' ')+'</td>'       //program title
 				     + '<td style="text-align:right;">'
-				     + '<label class="btn btn-primary">Add <i class="glyphicon glyphicon-plus" /></label></td>'
-				     + "</tr>";
+				     + '<label class="btn btn-primary">'                    //button (UI)
+				     + '<input class="hidden" type="checkbox" '             //form input
+				     + 'name="schedApptID[]" value="'+appt.schedApptID+'" '
+				     + 'id="input-addAppt-'+appt.schedApptID+'" />'         //unique id
+				     + '<span>Add</span>&nbsp;'
+				     + '<i class="glyphicon glyphicon-plus" />'             //glyphicon
+				     + '</label></td></tr>';
 			});
 			     
-			html += '</table><br />';
+			html += '</table></div>';
 		});
 
 		//If there were no results
@@ -250,12 +275,52 @@ include 'partials/header.php';
 		//place generated HTML into .appt-content container
 		$('.appt-content').html( html );
 
-		//DEBUG
-		//$('.appt-content').append( 'Incoming JSON:<br />'+json );
+
+		//initialize addAppt button UI
+		$('[id^="input-addAppt-"]').change(function (event) {
+			validationUIHandler(
+				$(this).parent(),
+				this.checked,
+				function (context, state) {
+					//set btn style
+					context
+						.toggleClass('btn-primary', !state)
+						.toggleClass('btn-success', state)
+
+					//set icon
+					context.children('i')
+						//plus icon if not checked
+						.toggleClass('glyphicon-plus', !state)
+
+						//check icon if checked
+						.toggleClass('glyphicon-ok', state)
+
+					//set btn text
+					context.children('span')
+						.html( (state) ? 'Added' : 'Add' );
+				}
+			)
+		});
 
 		return false;
 	}
+
+
+
+	function checkForTimeConflict ( schedApptID ) {
+		//pass in schedApptID from id attribute of selected input
+
+		var toBeAdded = $.grep(schedApptData, function (obj) {
+			return ( obj.schedApptID == schedApptID );
+		});
+	}
+
+
+	function addToItinerary ( schedApptID ) {
+		//
+	}
 </script>
+<script src='js/appt.js'></script>
 
 <?php
 include 'partials/footer.php'

@@ -27,6 +27,16 @@
 	
 
 	Instance Methods
+		->PushToDB()
+			- (new record) will create
+			 record in ScheduledAppointment database resembling this object
+
+		->SchedConflictTest()
+			- Screens database to verify it contains no time/room conflicts
+			- Returns 0 for valid time variables and no conflicts
+			- Returns 1 for invalid times (either "start > end", or invalid datetime variables)
+			- Returns 2 for scheduling conflict (time and building/room conflict with previously scheduled appointment)
+
 		->GetAppointmentTypeDetails()
 			- Return AND append an AppointmentType object to this instance, which details this ScheduledAppointment's
 			  appointment type
@@ -118,16 +128,81 @@ class ScheduledAppointment {
 
 		if ( self::GetBySchedApptID( $this->schedApptID ) ) {
 			//this ScheduledAppointment is already in the database
-			echo 'Update';
+			//echo 'Update';
+
+			$stmt = self::$conn->prepare('UPDATE `ScheduledAppointment`
+			        SET `ApptTypeID`   = :ApptTypeID,
+			            `CurriculumID` = :CurriculumID,
+			            `TimeStart`    = :TimeStart,
+			            `TimeEnd`      = :TimeEnd,
+			            `Building`     = :Building,
+			            `Room`         = :Room,
+			            `IsPrivate`    = :IsPrivate
+			        WHERE `SchedApptID` = :SchedApptID');
 		}
 
 		else {
 			//this ScheduledAppointment is not in the database
-			echo 'Input';
-
-			$qry = 'INPUT INTO `ScheduledAppointment`';
+			//echo 'Input';
+			
+			$stmt = self::$conn->prepare('INSERT INTO `ScheduledAppointment`
+			        (`SchedApptID`, `ApptTypeID`, `CurriculumID`, `TimeStart`, `TimeEnd`, `Building`, `Room`, `IsPrivate`)
+			        VALUES (:SchedApptID, :ApptTypeID, :CurriculumID, :TimeStart, :TimeEnd, :Building, :Room, :IsPrivate)');
 		}
+
+		///BIND PARAMS
+			//Bind SchedApptID or break function
+			if ( isset( $this->schedApptID ) && $this->schedApptID )
+				$stmt->bindParam( ':SchedApptID', $this->schedApptID, PDO::PARAM_STR );
+			else return false;
+
+			//Bind ApptTypeID or bind '0' (Other/Unspecified)
+			if ( isset( $this->apptTypeID ) && $this->apptTypeID )
+				$stmt->bindParam( ':ApptTypeID', $this->apptTypeID, PDO::PARAM_INT );
+			else
+				$stmt->bindValue( ':ApptTypeID', 0, PDO::PARAM_INT );
+
+			//Bind CurriculumID or bind null
+			if ( isset( $this->curriculumID ) && ( $this->apptTypeID == 3 ) )
+				$stmt->bindParam( ':CurriculumID', $this->curriculumID, PDO::PARAM_STR );
+			else
+				$stmt->bindValue( ':CurriculumID', null, PDO::PARAM_STR );
+
+			//Bind TimeStart or break function
+			if ( isset( $this->timeStart ) && $this->timeStart )
+				$stmt->bindParam( ':TimeStart', $this->timeStart, PDO::PARAM_STR );
+			else return false;
+
+			//Bind TimeEnd or break function
+			if ( isset( $this->timeEnd ) && $this->timeEnd )
+				$stmt->bindParam( ':TimeEnd', $this->timeEnd, PDO::PARAM_STR );
+			else return false;
+
+			//Bind Building or bind null
+			if ( isset( $this->building ) )
+				$stmt->bindParam( ':Building', $this->building, PDO::PARAM_STR );
+			else
+				$stmt->bindValue( ':Building', null, PDO::PARAM_STR );
+
+			//Bind Room or bind null
+			if ( isset( $this->room ) )
+				$stmt->bindParam( ':Room', $this->room, PDO::PARAM_STR );
+			else
+				$stmt->bindValue( ':Room', null, PDO::PARAM_STR );
+
+			//If isPrivate is defined, bind it.
+			//Else, set capus/department tours to public. All else will default to private
+			if ( isset( $this->isPrivate ) )
+				$stmt->bindParam( ':IsPrivate', $this->isPrivate, PDO::PARAM_INT );
+			else if ( $this->apptTypeID == 2 || $this->apptTypeID == 3 )
+				$stmt->bindValue( ':IsPrivate', 0, PDO::PARAM_INT );
+			else
+				$stmt->bindValue( ':IsPrivate', 1, PDO::PARAM_INT );
+		///BIND PARAMS
+
+		$stmt->execute();
 	}
+
 
 	public function GetAppointmentTypeDetails () {
 		require_once 'AppointmentType.php';
@@ -166,7 +241,7 @@ class ScheduledAppointment {
 
 		//query DB for record matching (SchedApptID = $schedApptID)
 		$stmt = self::$conn->prepare(
-			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `CurriculumID`, `ApptTypeID`
+			'SELECT `SchedApptID`, `TimeStart`, `TimeEnd`, `CurriculumID`, `ApptTypeID`, `Building`, `Room`, `IsPrivate`
 		   FROM `ScheduledAppointment`
 		   WHERE `SchedApptID` = :schedApptID');
 		$stmt->bindParam(':schedApptID', $schedApptID, PDO::PARAM_INT);

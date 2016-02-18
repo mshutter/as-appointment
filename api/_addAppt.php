@@ -27,22 +27,25 @@ $params = [];
 	//Building
 	if ( isset( $_POST['building'] ) ) {
 		$bldg = explode('_', $_POST['building']);
-		$params['Building'] = $bldg[0];
-		$params['Room'] = $bldg[1];
+		(isset($bldg[0])) ? $params['Building'] = $bldg[0] : null;
+		(isset($bldg[1])) ? $params['Room'] = $bldg[1] : null;
 	}
 //END PARAMS
 
 
-//Create new ScheduledAppointment\\
+//Create new ScheduledAppointment
 require_once '../models/ScheduledAppointment.php';
 
 //new
 $schedAppt = ScheduledAppointment::NewScheduledAppointment( $params );
 
-//old
-//$schedAppt = ScheduledAppointment::GetBySchedApptID();
-
+//push to db
 $schedAppt->PushToDB();
-var_dump( $schedAppt );
+//get from db
+$schedAppt = ScheduledAppointment::GetBySchedApptID( $schedAppt->schedApptID );
+//confirm
+var_dump($schedAppt);
 
 ?>
+
+<a href="../apptGen.php"><button>&lt Create another</button></a>

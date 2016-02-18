@@ -1,0 +1,12 @@
+Project Backlog
+	1. Build itinerary
+	2. Check availability when scheduling appointments
+	3. Check time overlaps when registering for appointments
+	4. Gather personal information
+	5. Email Confirmation
+	6. UI for date select
+
+Sprint Backlog (Mon 1 -> mon 8)
+	//1. Universal unique ID generator
+	//2. Generate test appts
+	3. Simple "add" UI response
