@@ -81,22 +81,12 @@ class AppointmentType {
 	}
 
 
-	public static function ListAppointmentTypes ( $onlyFacStaff = 0 ) {
+	public static function ListAppointmentTypes ( ) {
 		self::InitConnection();
 
-		// If list should only contain faculty/staff appts..
-		if ( $onlyFacStaff ) {
-
-			// Get only those types.
-			$stmt = self::$conn->query('SELECT `ApptTypeID`, `Title`
-		                              FROM `AppointmentType`
-		                              WHERE `IsFacultyOrStaffAppt` > 0');
-		}
-		else {
-			// Or else, get all appointment types.
-			$stmt = self::$conn->query('SELECT `ApptTypeID`, `Title` FROM `AppointmentType`');
-		}
-
+		//query database for all AppointmentTypes
+		$stmt = self::$conn->query('SELECT `ApptTypeID`, `Title` FROM `AppointmentType`');
+		
 		//If ApptTypes were successfully pulled from database..
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 

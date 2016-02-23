@@ -9,58 +9,38 @@ $deptList = Department::ListAllDepartments();
 
 // ========== Get faculty/staff appointments ========== //
 require_once 'models/AppointmentType.php';
-$facStaffAppts = AppointmentType::ListAppointmentTypes(true);
+//$facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 ?>
+	
+	<!-- input: campus tour -->
+	<label id="btn-campusTour" class="btn btn-primary">
+		<input id='inpt-campusTour' type="checkbox" name="apptTypeID[]" value="2" />
+		Campus Tour
+	</label>
+	<div class='row'></div>
 
-<!--
-	Static Filters
--->
+	<!-- input: admissions meeting -->
+	<label id="btn-admissions" class='btn btn-primary'>
+		<input id='input-admissions' type="checkbox" name='apptTypeID[]' value='4'>
+		Admissions Meeting
+	</label>
+	<div class="row"></div>
 
-	<!--
-		Input: Date -->
-
-		<label id="btn-date" class='btn btn-primary col-xs-12'>
-			<input id='input-date' class='hidden' type="text" name="date" value="" />
-			<i class="glyphicon glyphicon-calendar"></i>
-			<span data-role="display-value">Approximate Visit Date</span>
-		</label>
-		<div class="row-space"></div>
-
-
-	<!--
-		Input: Campus Tour -->
-
-		<label id="btn-campusTour" class="btn btn-primary col-xs-12">
-			<input class="hidden" id='input-campusTour' type="checkbox" name="apptTypeID[]" value="2" />
-			Tour Our Campus
-		</label>
-		<div class='row-space'></div>
-
-
-	<!--
-		Input: Faculty/Staff -->
-
-		<label id="btn-facStaffAppt" class="btn btn-primary col-xs-12" data-role='dropdown-toggle' data-dropdown="dropdown-facStaffAppts">	
-			Meet With Faculty/Staff
-			<i class="glyphicon glyphicon-menu-down"></i>
-		</label>
-		<div class="row"></div>
-
-		<div id="dropdown-facStaffAppts" data-role='dropdown-container'>
-			<?php foreach ( $facStaffAppts as $type ) : ?>		
-
-			<label class="btn btn-default appt-dropdown-item">
-				<input id="option-facStaff-<?php echo $type->apptTypeID; ?>" type="checkbox" name="apptTypeID[]" value="<?php echo $type->apptTypeID; ?>" />
-				<?php echo $type->title; ?>
-			</label>
-
-			<?php endforeach; ?>
-		</div>
-		<div class="row"></div>
-
-	<hr />
-
-
+	<!-- input: financial aid -->
+	<label id="btn-financialAid" class='btn btn-primary'>
+		<input id='inpt-financialAid' type="checkbox" name='apptTypeID[]' value='5'>
+		Financial Aid
+	</label>
+	<div class="row"></div>
+	
+	<!-- input: visit date
+	<label id="btn-date" class='btn btn-primary col-xs-12'>
+		<input id='input-date' class='hidden' type="text" name="date" value="" />
+		<i class="glyphicon glyphicon-calendar"></i>
+		<span data-role="display-value">Approximate Visit Date</span>
+	</label>
+	<div class="row-space"></div>
+	-->
 
 <!--
 	Dynamic Filters
@@ -74,6 +54,12 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 		Explore a Program
 	</a>
 	
+	<div>
+		Datepicker spot
+		<div id='datepicker'></div>
+	</div>
+
+
 	<?php
 		//NOTE:
 		//#dept-list will be moved to the bottom of the body tag.
@@ -97,5 +83,36 @@ $facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 			<?php endforeach; ?>	
 		</div>
 	</div>
+
+	<script>
+		var thisMonthOfAppts = [];
+		function getMonthOfAppts ( date ) {
+			//string date = 'yyyy-mm-dd' formatted date string
+
+			/*
+
+			LEFT OFF HERE
+
+			*/
+		}
+
+		function createTestBubble (month, date, year) {
+			var context = $('td[:contains("24")');
+			console.log(context[0]);
+			context.css('background-color', 'red');
+			return false;
+
+			//html elements (each day: table-cell):
+			//td[data-handler="selectDay"][data-month="0-11"][data-year="2016"]
+			//  <a>1-30</a> //day is content
+
+			//json element for filters:
+			//arr name: 
+			//  arr name: dd-mm-yyyy
+			//    vals: apptTypes (+3_curr)
+
+
+		}
+	</script>
 
 	<hr />

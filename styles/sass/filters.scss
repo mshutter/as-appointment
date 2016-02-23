@@ -170,21 +170,21 @@
 		}
 	}
 
-	
+@import 'datepicker.scss';
 
 //Hack to fix bizzare redirect error in firefox
 //Substitutes prev/next arrow images on jquery Datepicker with icons 
-.ui-datepicker-next,
-.ui-datepicker-prev {
-	font-family: "Glyphicons Halflings";
-	padding-top: .15em;
-	background: none;
-}
-.ui-datepicker-next:before {
-	padding-left: .4em;
-	content: "\e250";
-}
-.ui-datepicker-prev:before {
-	padding-left: .3em;
-	content: "\e251";
-}
+// .ui-datepicker-next,
+// .ui-datepicker-prev {
+// 	font-family: "Glyphicons Halflings";
+// 	padding-top: .15em;
+// 	background: none;
+// }
+// .ui-datepicker-next:before {
+// 	padding-left: .4em;
+// 	content: "\e250";
+// }
+// .ui-datepicker-prev:before {
+// 	padding-left: .3em;
+// 	content: "\e251";
+// }

@@ -14,7 +14,11 @@ function initFilters() {
 
 	// Initialize appt filter date selector
 	function initDatepicker () {
-		$('#input-date').datepicker({
+		$('#datepicker').datepicker({
+			beforeShowDay: $.datepicker.noWeekends,
+			inline: true,
+      showOtherMonths: true,
+      dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 			dateFormat: "m/d/yy",
 			minDate: 0
 		});
