@@ -14,24 +14,26 @@ require_once 'models/AppointmentType.php';
 	
 	<!-- input: campus tour -->
 	<label id="btn-campusTour" class="btn btn-primary">
-		<input id='inpt-campusTour' type="checkbox" name="apptTypeID[]" value="2" />
+		<input id='input-campusTour' type="checkbox" name="apptTypeID[]" value="1" />
 		Campus Tour
 	</label>
 	<div class='row'></div>
 
 	<!-- input: admissions meeting -->
 	<label id="btn-admissions" class='btn btn-primary'>
-		<input id='input-admissions' type="checkbox" name='apptTypeID[]' value='4'>
+		<input id='input-admissions' type="checkbox" name='apptTypeID[]' value='3'>
 		Admissions Meeting
 	</label>
 	<div class="row"></div>
 
 	<!-- input: financial aid -->
 	<label id="btn-financialAid" class='btn btn-primary'>
-		<input id='inpt-financialAid' type="checkbox" name='apptTypeID[]' value='5'>
+		<input id='input-financialAid' type="checkbox" name='apptTypeID[]' value='4'>
 		Financial Aid
 	</label>
 	<div class="row"></div>
+
+	<input id="input-date" type="text" name="date" value="" />
 	
 	<!-- input: visit date
 	<label id="btn-date" class='btn btn-primary col-xs-12'>
@@ -64,6 +66,10 @@ require_once 'models/AppointmentType.php';
 		//NOTE:
 		//#dept-list will be moved to the bottom of the body tag.
 		//See appt.js->initDialog() ?>
+	
+	<div class="debug-display">
+		<!-- To display JSON results from getMonthOfApptTypes -->
+	</div>
 
 	<div id="dept-list" hidden>
 		<div class="appt-dialog-header">
@@ -80,20 +86,52 @@ require_once 'models/AppointmentType.php';
 			</label>
 			<br />
 
-			<?php endforeach; ?>	
+			<?php endforeach; ?>
 		</div>
 	</div>
 
 	<script>
-		var thisMonthOfAppts = [];
-		function getMonthOfAppts ( date ) {
-			//string date = 'yyyy-mm-dd' formatted date string
+		var dpMonthDate = (new Date()).getFullYear()+'-'+((new Date()).getMonth() + 1)+'-'+'1';
+		var thisMonthOfApptTypes = [];
+
+		function getMonthOfApptTypes () {
+			//updates global variable 'thisMonthOfApptTypes' to match currently displayed
+			//datepicker month, and user-selected ApptTypeID filters
+
+			//build url
+			var url = "api/monthOfAppts.php?d="+dpMonthDate;
+
+			var checkedFilters = $('input[name="apptTypeID[]"]:checked');
+
+			//if any filters are checked, add them to the url
+			if ( checkedFilters.length ) {
+				checkedFilters.each(function () {
+					url += '&apptTypeID[]='+this.value;
+					console.log(this);
+				});
+			}
+
+			//if no filters are checked, send an empty array as apptTypeID[]'s' value
+			else {
+				url += '&apptTypeID[]=';
+			}
 
 			/*
 
 			LEFT OFF HERE
 
 			*/
+
+			console.log(url)
+
+ 			$.ajax({
+				url: url,
+				method: "get"
+			})
+			.done(function (data) {
+				console.log(data);
+			});
+
 		}
 
 		function createTestBubble (month, date, year) {

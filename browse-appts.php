@@ -10,25 +10,7 @@ if ( !isset( $_POST['date'] ) && !isset( $_SESSION['date'] ) ) {
 }
 
 //Assign request values to $_SESSION
-//apptTypeID
-if ( isset( $_POST['apptTypeID'] ) )
-	$_SESSION['apptTypeID'] = array_unique( $_POST['apptTypeID'] );
-
-//date
-if ( isset( $_POST['date'] ) )
-	$_SESSION['date'] = strtotime( $_POST['date'] );
-if ( !isset( $_SESSION['date'] ) )
-	$_SESSION['date'] = time();
-
-//departmentID
-if ( isset( $_POST['departmentID'] ) ) 
-	$_SESSION['departmentID'] = $_POST['departmentID'];
-
-//curriculumID
-if ( isset( $_POST['curriculumID'] ) )
-	$_SESSION['curriculumID'] = $_POST['curriculumID'];
-
-
+include_once 'api/updateSession.php';
 
 // Begin HTML
 include 'partials/preHeader.php';
@@ -45,6 +27,8 @@ include 'partials/header.php';
 			<!-- AJAX will populate this with navigation items for each day -->
 		</nav>
 	</div>
+
+	<a href="/as-webdev/as-appt-0.3/api/monthOfAppts.php?d=2016-04-01">Month Of Appts</a>
 
 	<!-- Example Alert -->
 	<div class='alert alert-warning alert-dismissable'>
@@ -63,7 +47,7 @@ include 'partials/header.php';
 		</p>
 	
 		<?php
-			/* DEBUG * /
+			/* DEBUG */
 			echo '<strong>Request</strong>';
 			echo '<pre>';
 			print_r($_REQUEST);
@@ -91,7 +75,6 @@ include 'partials/header.php';
 		refreshUI();
 	};
 
---
 	function refreshUI (args) {
 		
 		//if date has changed..

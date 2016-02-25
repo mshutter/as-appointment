@@ -19,16 +19,18 @@ function initFilters() {
 			inline: true,
       showOtherMonths: true,
       dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-			dateFormat: "m/d/yy",
-			minDate: 0
-		});
+			dateFormat: "yy-m-d",
+			minDate: 0,
+			onSelect: function (date) {
+				$('#input-date').val(date);
+			},
+			onChangeMonthYear: function (year, month) {
+				//update global variable 'dpMonthDate' to match datepicker state
+				dpMonthDate= year+'-'+month+'-1';
 
-		$('.ui-datepicker-next').removeClass('ui-datepicker-next');
-		$('.ui-datepicker-prev').removeClass('ui-datepicker-prev');
-
-		//Focus hidden date input on button click (opens datepicker)
-		$('#btn-date').click(function () {
-			$('#input-date').toggleClass('hidden',false).focus().toggleClass('hidden',true);
+				//call UI update function with updated date
+				getMonthOfApptTypes(dpMonthDate);
+			}
 		});
 	}
 
@@ -73,8 +75,13 @@ function initFilters() {
 	// Initialize appt filter button UI
 	function initFilterButtons () {
 
+		$('input[name="apptTypeID[]"]').change(function () {
+			getMonthOfApptTypes( true );
+		});
+
 	 //Bind UI change to Date selection
 		$('#input-date').change(function (event) {
+
 			validationUIHandler(
 				//Context for UI change
 				$('#btn-date'),
