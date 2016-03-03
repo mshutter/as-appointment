@@ -23,6 +23,7 @@ function initFilters() {
 			minDate: 0,
 			onSelect: function (date) {
 				$('#input-date').val(date);
+				getMonthOfApptTypes();
 			},
 			onChangeMonthYear: function (year, month) {
 				//update global variable 'dpMonthDate' to match datepicker state

@@ -76,6 +76,14 @@
 		a {
 			color: #000066;
 		}
+
+		&:hover {
+			background-color: lighten(#ffdd00, 38%);
+		}
+
+		&.ui-datepicker-current-day {
+			background-color: lighten(#000066, 75%);
+		}
 		
 		&.ui-state-disabled {
 			background-color: #f5f5f5;
@@ -86,4 +94,20 @@
 			}
 		}
 	}
+}
+
+
+/* datepicker ui-dots */
+
+.ui-dot {
+	display: block;
+	float: left;
+	
+	margin-right: .2em;	
+	height: .8em;
+	width: .8em;
+	
+	-webkit-border-radius: 50% !IMPORTANT;
+	-moz-border-radius: 50% !IMPORTANT;
+	border-radius: 50% !IMPORTANT;
 }

@@ -9,6 +9,7 @@ $title = "Visit";
 include 'partials/header.php';
 ?>
 
+<div class="round"></div>
 
 <div class="appt-container">
 	<div class="appt-header">

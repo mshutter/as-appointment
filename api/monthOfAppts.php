@@ -77,9 +77,10 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 		}
 	}
 
-	//erase duplicated ApptTypeIDs in each day's array
+	//erase duplicated ApptTypeIDs and resent keys in each day's array
 	foreach ($monthOfAppts as &$dayArr) {
 		$dayArr = array_unique($dayArr);
+		$dayArr = array_values($dayArr);
 	}
 
 	// var_dump($monthOfAppts);

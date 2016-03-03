@@ -4,62 +4,89 @@
 */
 
 // ========== Get list of departments ========== //
-require_once 'models/Department.php';
-$deptList = Department::ListAllDepartments();
+require_once 'models/Curriculum.php';
+$curriculums = Curriculum::ListAllCurriculums();
 
 // ========== Get faculty/staff appointments ========== //
 require_once 'models/AppointmentType.php';
 //$facStaffAppts = AppointmentType::ListAppointmentTypes(true);
 ?>
-	
+
+<div class="appt-filters-container">
+	<p>
+		Select which activities may be of interest to you during your visit:	
+	</p>
+
 	<!-- input: campus tour -->
-	<label id="btn-campusTour" class="btn btn-primary">
+	<label id="btn-campusTour" class="btn ui-1 col-xs-12">
 		<input id='input-campusTour' type="checkbox" name="apptTypeID[]" value="1" />
-		Campus Tour
+		Tour our Campus
 	</label>
-	<div class='row'></div>
+	<div class='row-space'></div>
 
 	<!-- input: admissions meeting -->
-	<label id="btn-admissions" class='btn btn-primary'>
+	<label id="btn-admissions" class='btn ui-3 col-xs-12'>
 		<input id='input-admissions' type="checkbox" name='apptTypeID[]' value='3'>
-		Admissions Meeting
-	</label>
-	<div class="row"></div>
-
-	<!-- input: financial aid -->
-	<label id="btn-financialAid" class='btn btn-primary'>
-		<input id='input-financialAid' type="checkbox" name='apptTypeID[]' value='4'>
-		Financial Aid
-	</label>
-	<div class="row"></div>
-
-	<input id="input-date" type="text" name="date" value="" />
-	
-	<!-- input: visit date
-	<label id="btn-date" class='btn btn-primary col-xs-12'>
-		<input id='input-date' class='hidden' type="text" name="date" value="" />
-		<i class="glyphicon glyphicon-calendar"></i>
-		<span data-role="display-value">Approximate Visit Date</span>
+		Meet with Admissions
 	</label>
 	<div class="row-space"></div>
-	-->
 
-<!--
-	Dynamic Filters
--->
-	<div id="dept-filters">
-		<!-- AJAX context for department filters -->
-	</div>
+	<!-- input: financial aid -->
+	<label id="btn-financialAid" class='btn ui-4 col-xs-12'>
+		<input id='input-financialAid' type="checkbox" name='apptTypeID[]' value='4'>
+		Meet with Financial Aid
+	</label>
+	<div class="row"></div>
+	<hr />
 
-	<a id="add-dept" href="#">
+	
+	<!-- input: department tour -->
+	<p>
+		Select from our list of programs, any that appeal to you:
+	</p>
+	
+	<label id="btn-deptartmentTour" class="btn ui-2 col-xs-12" data-role='dropdown-toggle' data-dropdown="dropdown-deptartmentTours">	
+			Explore a Program
+			<i class="glyphicon glyphicon-menu-down"></i>
+		</label>
+		<div class="row"></div>
+
+		<div id="dropdown-deptartmentTours" data-role='dropdown-container' style="max-height:300px;overflow-y:scroll;">
+			<?php foreach ( $curriculums as $curr ) : ?>		
+
+			<label class="appt-dropdown-item">
+				<input id="option-deptTour-<?php echo $curr->curriculumID; ?>" type="checkbox" name="test[]" value="<?php echo $curr->curriculumID; ?>" />
+				<?php echo $curr->title; ?>
+				<span style="display:block"></span>
+			</label>
+
+			<?php endforeach; ?>
+		</div>
+		<div class="row"></div>
+
+
+
+	<!-- <label id="btn-financialAid" class='btn ui-2 col-xs-12'>
+		<input id='input-departmentTour' type="checkbox" name='apptTypeID[]' value='2'>
+		Explore a Program
+	</label>
+	<div class="row"></div> -->
+
+
+
+
+	<!-- <a id="add-dept" href="#">
 		<i class="glyphicon glyphicon-plus"></i>
 		Explore a Program
-	</a>
+	</a> -->
+
+	<hr />
 	
-	<div>
-		Datepicker spot
-		<div id='datepicker'></div>
-	</div>
+	<p>
+		Select when, approximately you will be available for a visit:
+	</p>
+	<input id="input-date" class='hidden' type="text" name="date" value="" />
+	<div id='datepicker'></div>
 
 
 	<?php
@@ -91,8 +118,10 @@ require_once 'models/AppointmentType.php';
 	</div>
 
 	<script>
+		//dpMonthDate is a string representing a date that falls within the month currently being displayed by datepicker.
+		//	It is initially assigned to the first of today's month, and changes each time a new DP month is selected.
 		var dpMonthDate = (new Date()).getFullYear()+'-'+((new Date()).getMonth() + 1)+'-'+'1';
-		var thisMonthOfApptTypes = [];
+		var thisMonthOfApptTypes = {};
 
 		function getMonthOfApptTypes () {
 			//updates global variable 'thisMonthOfApptTypes' to match currently displayed
@@ -101,13 +130,13 @@ require_once 'models/AppointmentType.php';
 			//build url
 			var url = "api/monthOfAppts.php?d="+dpMonthDate;
 
+			//get jQuery DOM handle for each checked input
 			var checkedFilters = $('input[name="apptTypeID[]"]:checked');
 
 			//if any filters are checked, add them to the url
 			if ( checkedFilters.length ) {
 				checkedFilters.each(function () {
 					url += '&apptTypeID[]='+this.value;
-					console.log(this);
 				});
 			}
 
@@ -116,41 +145,54 @@ require_once 'models/AppointmentType.php';
 				url += '&apptTypeID[]=';
 			}
 
-			/*
-
-			LEFT OFF HERE
-
-			*/
-
-			console.log(url)
-
+			//call api/monthOfAppts.php
  			$.ajax({
 				url: url,
 				method: "get"
 			})
-			.done(function (data) {
-				console.log(data);
+			.done(updateCalendarIU);
+		}
+
+		function updateCalendarIU (json) {
+			//accepts json of currently displayed month of apptTypes
+			//uses json to display apptTypes available on each day
+
+			//clear previous ui
+			$('td[data-handler="selectDay"]').children("span").remove();
+
+			thisMonthOfApptTypes = JSON.parse(json);
+			var tcells = []; //context of ui. table cells that can be targeted
+			var idate  = ""; //loop index holding string of date
+			var uihtml = ""; //string holding html for ui elements
+
+			var numOfDaysWithAppts = Object.keys(thisMonthOfApptTypes).length;
+
+			//populate tcells[] with jQuery DOM handles for each selectable datepicker table cell
+			$('td[data-handler]').each(function (i, e) {
+				tcells[$(e).children('a').first().html()] = $(e);
 			});
 
-		}
+			//for each day
+			for (var i = 0; i < numOfDaysWithAppts; i++) {
 
-		function createTestBubble (month, date, year) {
-			var context = $('td[:contains("24")');
-			console.log(context[0]);
-			context.css('background-color', 'red');
-			return false;
+				//get this date
+				idatestring = Object.keys(thisMonthOfApptTypes)[i];
 
-			//html elements (each day: table-cell):
-			//td[data-handler="selectDay"][data-month="0-11"][data-year="2016"]
-			//  <a>1-30</a> //day is content
+				//parse date string to target element
+				idate = new Date(idatestring+"T12:00:00");
 
-			//json element for filters:
-			//arr name: 
-			//  arr name: dd-mm-yyyy
-			//    vals: apptTypes (+3_curr)
+				//build ui item html
+				uihtml = '<span><br /></span>';
+				thisMonthOfApptTypes[idatestring].forEach(function (e, i, arr) {
+					uihtml += '<span class="ui-dot ui-'+e+'"></span>'
+				});
 
-
+				//add ui html to target element
+				if ( tcells[idate.getDate()] ) {
+					tcells[idate.getDate()].append(uihtml);
+				}
+			}
 		}
 	</script>
-
 	<hr />
+</div>
