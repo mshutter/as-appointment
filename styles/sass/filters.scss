@@ -38,8 +38,20 @@
 	display: none;
 }
 .appt-dropdown-item {
+	background-color: #f8f8f8;
 	width: 100%;
 	text-align: left;
+	padding: 5px;
+	margin: 0;
+	font-weight: 400;
+	
+	input[type="checkbox"] {
+		margin-right: 3px;
+	}
+
+	&:nth-child(odd) {
+		background-color: #f0f0f0;
+	}
 }
 
 
@@ -180,8 +192,9 @@ form.appt-filters > input {
 		}
 	}
 
-@import 'datepicker.scss';
 
+
+@import 'datepicker.scss';
 
 //campus tour
 .ui-1 {

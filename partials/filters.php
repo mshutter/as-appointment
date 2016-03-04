@@ -51,16 +51,19 @@ require_once 'models/AppointmentType.php';
 		</label>
 		<div class="row"></div>
 
-		<div id="dropdown-deptartmentTours" data-role='dropdown-container' style="max-height:300px;overflow-y:scroll;">
-			<?php foreach ( $curriculums as $curr ) : ?>		
+		<div id="dropdown-deptartmentTours" data-role='dropdown-container'>
+			<i class='glyphicon glyphicon-search'></i>Search thing
+			<div class='curriculumList' style="max-height:300px;overflow-y:scroll;">
+			<?php foreach ( $curriculums as $curr ) : ?>
 
 			<label class="appt-dropdown-item">
-				<input id="option-deptTour-<?php echo $curr->curriculumID; ?>" type="checkbox" name="test[]" value="<?php echo $curr->curriculumID; ?>" />
+				<input id="option-deptTour-<?php echo $curr->curriculumID; ?>" type="checkbox" name="curriculumID[]" value="<?php echo $curr->curriculumID; ?>" />
 				<?php echo $curr->title; ?>
-				<span style="display:block"></span>
+				<span style="display:block;float:right;"><a href="<?php echo $curr->link; ?>" target="_blank">link</a></span>
 			</label>
 
 			<?php endforeach; ?>
+			</div>
 		</div>
 		<div class="row"></div>
 

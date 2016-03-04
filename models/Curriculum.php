@@ -1,4 +1,4 @@
-<?php
+-<?php
 
 /*
 	=========================
@@ -10,7 +10,7 @@
 		$curriculumID (string) - Unique ID (usually ~3-4 numeric digits)
 		$departmentID (int)    - Numeric ID indicating what department this curriculum belongs to
 		$title (string)        - Concise title given to present curriculum to users
-		$description (string)  - Complete description detailing learning outcomes, courses, etc..
+		$link (string)         - Url provided to read more about a curriculum
 
 	
 	Instance Methods
@@ -44,7 +44,7 @@ class Curriculum {
 	public $curriculumID;
 	public $departmentID;
 	public $title;
-	public $description;
+	public $link;
 
 	
 // ========== Database Connection ========== //
@@ -69,7 +69,7 @@ class Curriculum {
 		$this->curriculumID = ( array_key_exists('CurriculumID', $params) ) ? $params['CurriculumID'] : null;
 		$this->departmentID = ( array_key_exists('DepartmentID', $params) ) ? $params['DepartmentID'] : null;
 		$this->title        = ( array_key_exists('Title', $params) )        ? $params['Title'] : null;
-		$this->description  = ( array_key_exists('Description', $params) )  ? $params['Description'] : null;
+		$this->link         = ( array_key_exists('Link', $params) )         ? $params['Link'] : null;
 	}
 
 	private static function construct_multiple( $arr ) {
@@ -87,7 +87,7 @@ class Curriculum {
 		self::InitConnection();
 
 		//Get Curriculum from DB by CurriculumID
-		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`, `Description`
+		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`, `Link`
 		                              FROM `Curriculum`
 		                              WHERE `CurriculumID` = :curriculumID');
 		$stmt->bindParam(':curriculumID', $curriculumID, PDO::PARAM_STR);
@@ -109,7 +109,7 @@ class Curriculum {
 		self::InitConnection();
 
 		//Get all Curriculums from database
-		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`
+		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`, `Link`
 		                              FROM `Curriculum`');
 		$stmt->execute();
 
@@ -129,7 +129,7 @@ class Curriculum {
 		self::InitConnection();
 
 		//Get curriculums from DB that match $departmentID.
-		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`
+		$stmt = self::$conn->prepare('SELECT `CurriculumID`, `DepartmentID`, `Title`, `Link`
 		                              FROM `Curriculum`
 		                              WHERE `DepartmentID` = :departmentID');
 		$stmt->bindParam(':departmentID', $departmentID, PDO::PARAM_INT);

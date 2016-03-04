@@ -31,8 +31,16 @@
   display: none; }
 
 .appt-dropdown-item {
+  background-color: #f8f8f8;
   width: 100%;
-  text-align: left; }
+  text-align: left;
+  padding: 5px;
+  margin: 0;
+  font-weight: 400; }
+  .appt-dropdown-item input[type="checkbox"] {
+    margin-right: 3px; }
+  .appt-dropdown-item:nth-child(odd) {
+    background-color: #f0f0f0; }
 
 form.appt-filters > input {
   margin-bottom: 1em; }
