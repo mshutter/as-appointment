@@ -1,35 +1,31 @@
 <?php session_start();
 
-//Bring url params into variable scope and SESSION scope.
-//SESSION scope values will persist if not replaced by REQUEST scope values
-	//date
-	if ( isset( $_GET['da'] ) )
-		$_SESSION['date'] = strtotime( $_GET['da'] );
+//Bring url params to session scope
+	require_once 'updateSession.php';
+
+//Bring session variables to variable scope
 	$date = date( 'Y-m-d', $_SESSION['date'] ).' 00:00:00';
-
-	//dateEnd (in this case, datetime at the end of $date)
-	$dateEnd = date( 'Y-m-d', $_SESSION['date'] ).' 23:59:59';
-
-	//apptTypeID
-	if ( isset( $_GET['ty'] ) )
-		$_SESSION['apptTypeID'] = $_GET['ty'];
+	$dateEnd = date( 'Y-m-d', $_SESSION['date'] ).' 23:59:59'; //datetime at the end of $date
 	$apptTypeID = $_SESSION['apptTypeID'];
-
-	//departmentID
-	if ( isset( $_GET['de'] ) )
-		$_SESSION['departmentID'] = $_GET['de'];
-	$departmentID = $_SESSION['departmentID'];
-
-	//curriculumID
-	if ( isset( $_GET['cu'] ) )
-		$_SESSION['curriculumID'] = $_GET['cu'];
-	$curriculumID = $_SESSION['curriculumID'];
-
-
-/**
- * Retrieve Data
- */
+	$curriculumID = isset($_SESSION['curriculumID']) ? $_SESSION['curriculumID'] : [];
+	$currList = []; //Curriculum objects for each selected 
+	$deptList = []; //List of deptIDs that house the curriculums
 	
+//==== Get curriculum object and departmentIDs (patched from version 0.2)
+	require_once '../models/Curriculum.php';
+	foreach ($curriculumID as $curr) {
+
+		//get each curriculum object and push to $currList
+		$tmp = Curriculum::GetByCurriculumID($curr);
+		$tmp->GetDepartmentDetails();
+		array_push( $currList, $tmp );
+
+		//push relevant deptIDs to $deptList
+		if ( !in_array( $tmp->Department->departmentID, $deptList ) )
+			array_push( $deptList, $tmp->Department->departmentID );
+	}
+//===
+
 
 	//response array to hold appt results
 	$res = [];
@@ -44,7 +40,7 @@
 	foreach ( $apptTypeID as $typeID ) {
 
 		//For all apptTypes other than 3 (department tour)
-		if ($typeID != '3') {
+		if ($typeID != '2') {
 
 			if ( $arr = ScheduledAppointment::ListByApptTypeID( $typeID, null, $date ) ) {
 
@@ -65,15 +61,18 @@
 				"apptType" => AppointmentType::GetByApptTypeID( $typeID ),
 				"apptList" => $apptList
 			];
+
+			if ( $apptGroup['apptList'] ) {
+				array_push( $res, $apptGroup );
+			}
 		}
 
 		//For apptType == '3' (department tour)..
 		else {
 			require_once '../models/Department.php';
-			require_once '../models/Curriculum.php';
 
 			//For each department..
-			foreach ( $departmentID as $deptID ) {
+			foreach ( $deptList as $deptID ) {
 	
 				//Get data on current department
 				$department = Department::GetByDepartmentID( $deptID );
@@ -88,12 +87,11 @@
 					if ( $curriculum->Department->departmentID == $department->departmentID ) {
 
 						//If tours are available, add them to the list.
-						if ( $arr = ScheduledAppointment::ListByApptTypeID( 3, $currID, $date ) ) {
+						if ( $arr = ScheduledAppointment::ListByApptTypeID( 2, $currID, $date ) ) {
 
 							//Add curriculum information to each appt and change datetime strings to time
 							foreach ( $arr as &$r ) {
 						 		$r->title = $curriculum->title;
-								$r->description = $curriculum->description;
 								$r->timeStart = date('g:i a',strtotime($r->timeStart));
 								$r->timeEnd = date('g:i a',strtotime($r->timeEnd));
 							}
@@ -115,16 +113,15 @@
 
 				//Append department title to appointment type title
 				$apptGroup['apptType']->title .= " - ".$department->title;
+
+
+				if ( $apptGroup['apptList'] ) {
+					array_push( $res, $apptGroup );
+				}
 			}
 		}
-
-		//If apptGroup contains appts for this day, add it to the results array  
-		if ( $apptGroup['apptList'] ) {
-			array_push( $res, $apptGroup );
-		}
 	}
-
+	
 	//Return json encoded result array
 	echo json_encode( $res );
-
 ?>

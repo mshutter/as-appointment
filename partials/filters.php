@@ -17,21 +17,21 @@ require_once 'models/AppointmentType.php';
 		Select which activities may be of interest to you during your visit:	
 	</p>
 
-	<!-- input: campus tour -->
+<!-- input: campus tour -->
 	<label id="btn-campusTour" class="btn ui-1 col-xs-12">
 		<input id='input-campusTour' type="checkbox" name="apptTypeID[]" value="1" />
 		Tour our Campus
 	</label>
 	<div class='row-space'></div>
 
-	<!-- input: admissions meeting -->
+<!-- input: admissions meeting -->
 	<label id="btn-admissions" class='btn ui-3 col-xs-12'>
 		<input id='input-admissions' type="checkbox" name='apptTypeID[]' value='3'>
 		Meet with Admissions
 	</label>
 	<div class="row-space"></div>
 
-	<!-- input: financial aid -->
+<!-- input: financial aid -->
 	<label id="btn-financialAid" class='btn ui-4 col-xs-12'>
 		<input id='input-financialAid' type="checkbox" name='apptTypeID[]' value='4'>
 		Meet with Financial Aid
@@ -40,49 +40,37 @@ require_once 'models/AppointmentType.php';
 	<hr />
 
 	
-	<!-- input: department tour -->
+<!-- input: department tour -->
+	<input id='input-departmentTour' class='hidden' type="checkbox" name='apptTypeID[]' value='2'>
 	<p>
 		Select from our list of programs, any that appeal to you:
 	</p>
 	
 	<label id="btn-deptartmentTour" class="btn ui-2 col-xs-12" data-role='dropdown-toggle' data-dropdown="dropdown-deptartmentTours">	
-			Explore a Program
-			<i class="glyphicon glyphicon-menu-down"></i>
-		</label>
-		<div class="row"></div>
-
-		<div id="dropdown-deptartmentTours" data-role='dropdown-container'>
-			<i class='glyphicon glyphicon-search'></i>Search thing
-			<div class='curriculumList' style="max-height:300px;overflow-y:scroll;">
-			<?php foreach ( $curriculums as $curr ) : ?>
-
-			<label class="appt-dropdown-item">
-				<input id="option-deptTour-<?php echo $curr->curriculumID; ?>" type="checkbox" name="curriculumID[]" value="<?php echo $curr->curriculumID; ?>" />
-				<?php echo $curr->title; ?>
-				<span style="display:block;float:right;"><a href="<?php echo $curr->link; ?>" target="_blank">link</a></span>
-			</label>
-
-			<?php endforeach; ?>
-			</div>
-		</div>
-		<div class="row"></div>
-
-
-
-	<!-- <label id="btn-financialAid" class='btn ui-2 col-xs-12'>
-		<input id='input-departmentTour' type="checkbox" name='apptTypeID[]' value='2'>
 		Explore a Program
+		<i class="glyphicon glyphicon-menu-down"></i>
 	</label>
-	<div class="row"></div> -->
+	<div class="row"></div>
 
+	<div id="dropdown-deptartmentTours" data-role='dropdown-container'>
+		<div class="search-bar">
+			<i class='glyphicon glyphicon-search search-icon'>
+			</i><input type="text" class='search-field' id='input-search' placeholder='Search - e.g. "Computers" or "Information Technology"'  />
+		</div>
 
+		<div class='curriculumList' style="max-height:300px;overflow-y:scroll;">
+		<?php foreach ( $curriculums as $curr ) : ?>
 
+		<label class="appt-dropdown-item noselect">
+			<input class="option-deptTour" id="input-deptTour-<?php echo $curr->curriculumID; ?>"
+				type="checkbox" name="curriculumID[]" value="<?php echo $curr->curriculumID; ?>" />
+			<?php echo $curr->title; ?>
+			<span style="display:block;float:right;"><a href="<?php echo $curr->link; ?>" target="_blank">Details</a></span>
+		</label>
 
-	<!-- <a id="add-dept" href="#">
-		<i class="glyphicon glyphicon-plus"></i>
-		Explore a Program
-	</a> -->
-
+		<?php endforeach; ?>
+		</div>
+	</div>
 	<hr />
 	
 	<p>
@@ -91,40 +79,12 @@ require_once 'models/AppointmentType.php';
 	<input id="input-date" class='hidden' type="text" name="date" value="" />
 	<div id='datepicker'></div>
 
-
-	<?php
-		//NOTE:
-		//#dept-list will be moved to the bottom of the body tag.
-		//See appt.js->initDialog() ?>
-	
-	<div class="debug-display">
-		<!-- To display JSON results from getMonthOfApptTypes -->
-	</div>
-
-	<div id="dept-list" hidden>
-		<div class="appt-dialog-header">
-			<h3>Choose a Department</h3>
-			<i class="glyphicon glyphicon-remove appt-dialog-close"></i>
-		</div>
-
-		<div class="appt-dialog-content">
-			<?php foreach ( $deptList as $dept ) : ?>
-			
-			<label class="select-dept col-xs-12" data-dept="<?php echo $dept->departmentID; ?>">
-				<i class="glyphicon glyphicon-plus"></i>
-				<?php echo $dept->title; ?>
-			</label>
-			<br />
-
-			<?php endforeach; ?>
-		</div>
-	</div>
-
 	<script>
 		//dpMonthDate is a string representing a date that falls within the month currently being displayed by datepicker.
 		//	It is initially assigned to the first of today's month, and changes each time a new DP month is selected.
 		var dpMonthDate = (new Date()).getFullYear()+'-'+((new Date()).getMonth() + 1)+'-'+'1';
 		var thisMonthOfApptTypes = {};
+
 
 		function getMonthOfApptTypes () {
 			//updates global variable 'thisMonthOfApptTypes' to match currently displayed
@@ -135,11 +95,17 @@ require_once 'models/AppointmentType.php';
 
 			//get jQuery DOM handle for each checked input
 			var checkedFilters = $('input[name="apptTypeID[]"]:checked');
+			var checkedCurrs = $('input[name="curriculumID[]"]:checked');
 
-			//if any filters are checked, add them to the url
+			//if any filters or curriculums are checked, add them to the url
 			if ( checkedFilters.length ) {
 				checkedFilters.each(function () {
 					url += '&apptTypeID[]='+this.value;
+				});
+			}
+			if ( checkedCurrs.length ) {
+				checkedCurrs.each(function () {
+					url += '&curriculumID[]='+this.value;
 				});
 			}
 
@@ -195,6 +161,18 @@ require_once 'models/AppointmentType.php';
 					tcells[idate.getDate()].append(uihtml);
 				}
 			}
+		}
+
+		function debounce(fn, delay) {
+			//executes @fn if it remains uncalled after @delay ms
+		  var timer = null;
+		  return function () {
+		    var context = this, args = arguments;
+		    clearTimeout(timer);
+		    timer = setTimeout(function () {
+		      fn.apply(context, args);
+		    }, delay);
+		  };
 		}
 	</script>
 	<hr />

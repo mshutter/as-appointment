@@ -19,6 +19,7 @@ $params = [];
 		if ( isset( $_POST['time-end']) )
 			$params['TimeEnd'] = $date.' '.date( 'H:i:s', strtotime( $_POST['time-end'] ) );
 	}
+	
 
 	//CurriculumID
 	if ( isset( $_POST['curr'] ) )
@@ -30,6 +31,8 @@ $params = [];
 		(isset($bldg[0])) ? $params['Building'] = $bldg[0] : null;
 		(isset($bldg[1])) ? $params['Room'] = $bldg[1] : null;
 	}
+
+	var_dump($params);
 //END PARAMS
 
 
@@ -48,4 +51,4 @@ var_dump($schedAppt);
 
 ?>
 
-<a href="../apptGen.php"><button>&lt Create another</button></a>
+<a href="../_apptGen.php"><button>&lt Create another</button></a>

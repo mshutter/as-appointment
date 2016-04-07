@@ -9,55 +9,31 @@
 // $dept->GetCurriculums();
 ?>
 
-
 <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 
+<!-- first range -->
+<input id='x1' type="text" name="x1" />
+<input id='x2' type="text" name="x2" />
+<br />
+
+<!-- second range -->
+<input id='y1' type="text" name="y1" />
+<input id='y2' type="text" name="y2" />
+
+<button onclick="return checkDates()">Check</button>
+<div id="display"></div>
+
 <script>
-	$(document).ready(function () {
-		var arr = [];
-		console.log(arr);
-	});
-</script>
-<div class="target"></div>
+	function checkDates (x1, x2, y1, y2) {
+		//change time strings into comparable date objects
+		x1 = new Date('1/1/2011 ' + x1);
+		x2 = new Date('1/1/2011 ' + x2);
+		y1 = new Date('1/1/2011 ' + y1);
+		y2 = new Date('1/1/2011 ' + y2);
 
-<div id="header">
-	<h1>DVD Collection</h1>k
-</div>
+		console.log(x1, x2, y1, y2);
 
-<input type="text" value='filter'>
-
-<ul id="curriculums">
-  <li><a data-keywords="">Agriculture Business</a></li>
-  <li><a data-keywords="horticulture dairy science animal science">Agriculture Technology</a></li>
-  <li><a data-keywords="architecture">Architectural Technology</a></li>
-  <li><a data-keywords="">Interior Design</a></li>
-  <li><a data-keywords="">Automotive Repair</a></li>
-<ul>
-
-
-<?php
-
-/**
- * GENERATE UID FUNCTION
- */
-
-function UniqueID () {
-	//String containing all characters that may be used in unique ID
-	$chars = str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-
-	//First character must be alphabetical
-	$uid = substr( $chars, mt_rand(0,51), 1 );
-
-	//Shuffle numbers into $chars
-	$chars = str_shuffle($chars . '0123456789');
-
-	//Add 9 random alphanumeric characters to $uid
-	for ($i = 0; $i < 9; $i++) {
-		$x = mt_rand(0,61);
-		$uid .= substr( $chars, $x, 1 );
+		//return false if there is a conflict
+		return !(x1 < y2 && y1 < x2);
 	}
-
-	return $uid;
-}
-
-?>
+</script>

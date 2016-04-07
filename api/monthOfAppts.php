@@ -11,8 +11,9 @@
 //begin and (if needed) update session
 session_start();
 require_once './updateSession.php';
-
 require_once '../models/Database.php';
+
+
 
 //if date (?d) is provided and is valid
 if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
@@ -28,7 +29,7 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 	$conn = Database::Connect();
 
 	//write string to query for appts within timeframe
-	$qry = "SELECT `TimeStart`, `ApptTypeID`
+	$qry = "SELECT `TimeStart`, `ApptTypeID`, `CurriculumID`
 	        FROM `ScheduledAppointment`
 	        WHERE (`TimeStart` >= :timeStart
 	          AND `TimeEnd` <= :timeEnd)";
@@ -63,17 +64,21 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 	$monthOfAppts = []; //will hold results of query
 	while ( $r = $stmt->fetch() ) {
 
+		// var_dump($r);
+
 		//take time away from $r['TimeStart'] (leaving only date)
 		$r['TimeStart'] = date( 'Y-m-d', strtotime( $r['TimeStart'] ) );
-		
 
-		//if this is a new day, add it to $monthOfAppts
-		if ( !array_key_exists($r['TimeStart'], $monthOfAppts) ) {
-			$monthOfAppts[$r['TimeStart']] = [$r['ApptTypeID']];
-		}
+		if ( $r['ApptTypeID'] != '2' || checkForCurrID($r['CurriculumID']) ) {
 
-		else {
-			array_push($monthOfAppts[$r['TimeStart']], $r['ApptTypeID']);
+			//if this is a new day, add it to $monthOfAppts
+			if ( !array_key_exists($r['TimeStart'], $monthOfAppts) ) {
+				$monthOfAppts[$r['TimeStart']] = [$r['ApptTypeID']];
+			}
+
+			else {
+				array_push($monthOfAppts[$r['TimeStart']], $r['ApptTypeID']);
+			}
 		}
 	}
 
@@ -90,8 +95,8 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 
 else {
 	//something has failed
-	echo ( isset( $_GET['d'] ) )? 'true':'false';
-	echo json_encode($_SESSION);
+	// echo ( isset( $_GET['d'] ) )?'true':'false';
+	// echo json_encode($_SESSION);
 }
 
 
@@ -99,8 +104,17 @@ else {
 //verify validity of a date string
 function validateDate($date)
 {
-    $d = DateTime::createFromFormat('Y-n-j', $date);
-    return $d && $d->format('Y-n-j') == $date;
+  $d = DateTime::createFromFormat('Y-n-j', $date);
+  return $d && $d->format('Y-n-j') == $date;
+}
+
+//verify that this department tour fits user-selected filters (in $_SESSION)
+function checkForCurrID ( $id ) {
+	foreach ( $_SESSION['curriculumID'] as $idChk ) {
+		if ( $id == $idChk )
+			return true;
+	}
+	return false;
 }
 
 ?>

@@ -1,3 +1,11 @@
+/* Color Variables */
+$red:    #d9534f;
+$yellow: #d9534f;
+$green:  #5cb85c;
+$blue:   #337ab7;
+
+
+
 //Reset border-radius set by bootstrap
 *,
 * > * {
@@ -29,7 +37,19 @@
 	display: block;
 	clear: both;
 	width: 100%;
-	height: .8em; }
+	height: .8em;
+	content: " "; }
+
+//apply to disable selection of text within an element
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently
+                                  not supported by any browser */
+}
 
 
 
@@ -61,6 +81,31 @@
 form.appt-filters > input {
 	margin-bottom: 1em;
 }
+
+
+// ========== Search Bar ========== //
+
+.search-bar {
+	width: 100%;
+	
+	.search-icon,
+	.search-field {
+		margin: 0;
+		border: none;
+		padding: .5em; 
+	}
+	.search-icon {
+		width: 5%;
+	}
+	.search-field {
+		width: 95%;
+		
+		&:focus {
+			outline: none !important;
+		}
+	}
+}
+
 
 
 // ========== Dialog Styles ========== //
@@ -124,6 +169,7 @@ form.appt-filters > input {
 }
 
 
+
 // Default state
 // =============
 	
@@ -156,6 +202,7 @@ form.appt-filters > input {
 	      -ms-transform: scale(1.5);
 	          transform: scale(1.5);
 	}
+
 
 
 // Open state
@@ -295,6 +342,22 @@ form.appt-filters > input {
 		}
 	}	
 }
+
+
+
+.red {
+	color: $red;
+}
+.yellow {
+	color: $yellow;
+}
+.blue {
+	color: $blue;
+}
+.green {
+	color: $green;
+}
+
 
 //Hack to fix bizzare redirect error in firefox
 //Substitutes prev/next arrow images on jquery Datepicker with icons 

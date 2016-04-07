@@ -163,7 +163,7 @@ class ScheduledAppointment {
 				$stmt->bindValue( ':ApptTypeID', 0, PDO::PARAM_INT );
 
 			//Bind CurriculumID or bind null
-			if ( isset( $this->curriculumID ) && ( $this->apptTypeID == 3 ) )
+			if ( isset( $this->curriculumID ) && ( $this->apptTypeID == 2 ) )
 				$stmt->bindParam( ':CurriculumID', $this->curriculumID, PDO::PARAM_STR );
 			else
 				$stmt->bindValue( ':CurriculumID', null, PDO::PARAM_STR );
@@ -266,8 +266,8 @@ class ScheduledAppointment {
 		        WHERE `ApptTypeID` = :apptTypeID';
 
 
-		//if $apptTypeID is 3 (department tour)..
-		if ( $apptTypeID == 3 ) {
+		//if $apptTypeID is 2 (department tour)..
+		if ( $apptTypeID == 2 ) {
 
 			//and a curriculum has been passed, append it to the query string
 			if ( $curriculumID )

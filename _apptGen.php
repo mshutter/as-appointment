@@ -33,7 +33,7 @@ var_dump($curr);
 
 <form method="post" action="api/_addAppt.php">
 	<label for="input-date">Date:</label>
-	<input id='input-date' type="text" name="date" value="4/1/2016" />
+	<input id='input-date' type="text" name="date" value="4/29/2016" />
 	<br />
 
 	<select id="input-type" name='type'>

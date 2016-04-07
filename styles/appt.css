@@ -1,3 +1,4 @@
+/* Color Variables */
 *,
 * > * {
   -webkit-border-radius: 0 !important;
@@ -25,7 +26,23 @@
   display: block;
   clear: both;
   width: 100%;
-  height: .8em; }
+  height: .8em;
+  content: " "; }
+
+.noselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE/Edge */
+  user-select: none;
+  /* non-prefixed version, currently
+     not supported by any browser */ }
 
 *[data-role='dropdown-container'] {
   display: none; }
@@ -44,6 +61,20 @@
 
 form.appt-filters > input {
   margin-bottom: 1em; }
+
+.search-bar {
+  width: 100%; }
+  .search-bar .search-icon,
+  .search-bar .search-field {
+    margin: 0;
+    border: none;
+    padding: .5em; }
+  .search-bar .search-icon {
+    width: 5%; }
+  .search-bar .search-field {
+    width: 95%; }
+    .search-bar .search-field:focus {
+      outline: none !important; }
 
 .appt-dialog .appt-dialog-header {
   border-bottom: 1px solid #eee; }
@@ -242,4 +273,16 @@ form.appt-filters > input {
     .ui-4.btn:active {
       border: 1px solid #cf0b00; }
 
-/*# sourceMappingURL=filters.css.map */
+.red {
+  color: #d9534f; }
+
+.yellow {
+  color: #d9534f; }
+
+.blue {
+  color: #337ab7; }
+
+.green {
+  color: #5cb85c; }
+
+/*# sourceMappingURL=appt.css.map */
