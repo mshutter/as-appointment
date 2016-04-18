@@ -49,7 +49,7 @@ require_once "partials/header.php";
 <hr />
 <h4><?php echo date('l, F d, Y', strtotime($schedAppts[0]->timeStart)); ?></h4>
 
-<form action="finished.php" method="POST">
+<form action="api/_registerStudent.php" method="POST">
 <?php
 $i = 0;
 foreach ( $schedAppts as $appt ) : ?>
@@ -87,6 +87,8 @@ endforeach;
 ?>
 <hr />
 
+<h2>Student Information</h2>
+
 <div class="form-group">
 	<label>Name <span class="red">*</span></label><br />
 	<input class='col-xs-5' type="text" name="firstName" placeholder="First Name" required />
@@ -104,8 +106,10 @@ endforeach;
 <div class="row-space"></div>
 
 <div class="form-group">
-	<label>Address <span class="red">*</span></label>
-	<input class="col-xs-12" type="text" name="address" placeholder="Street" required />
+	<label>Mailing Address <span class="red">*</span></label>
+	<input class="col-xs-12" type="text" name="addressLine1" placeholder="Address Line 1" required />
+	<div class="row-space"></div>
+	<input class="col-xs-12" type="text" name="addressLine2" placeholder="Address Line 2" />
 </div>
 <div class="row-space"></div>
 
@@ -126,24 +130,46 @@ endforeach;
 <div class="row-space"></div>
 
 <div class="form-group">
-	<label>Phone</label>
+	<label>Phone <span class="red">*</span></label>
 	<div class="row"></div>
-	<input class="col-xs-6" type="text" name='primaryPhone' placeholder='Primary' />
-	<input class="col-xs-6" type="text" name='secondaryPhone' placeholder='Secondary' />
+
+	<input class="col-xs-8" type="text" name='primaryPhone' placeholder='Primary (required)' required />
+	<div class="col-xs-4">
+		<input type="checkbox" name="primaryIsMobile" />
+		<span>mobile</span>
+	</div>
+	<div class="row-space"></div>
+
+	<input class="col-xs-8" type="text" name='secondaryPhone' placeholder='Secondary' />
+	<div class="col-xs-4">
+		<input type="checkbox" name="secondaryIsMobile" />	
+		<span>mobile</span>
+	</div>
 </div>
 <div class="row-space"></div>
 
+
 <div class="form-group">
-	<label>Highschool</label>
-	<input class="col-xs-12" type="text" name='highschool' placeholder='Highschool' />
+	<label class='col-xs-8' style='padding-left:0;'>High School</label>
+	<label class='col-xs-4' style='padding-left:0;'>Grad. Year</label>
+	<input class="col-xs-8" type="text" name='highSchool' placeholder='High School' />
+	<input class='col-xs-4' type="text" name='gradYear' maxlength='4' placeholder='Grad. Year' />	
 </div>
 <div class='row-space'></div>
+
 
 <div class="form-group">
 	<label>Birth Date</label><br />
 	<input class="col-xs-12" type="text" name="birthDate" placeholder="Birth Date (MM/DD/YYYY)" />
 </div>
 <div class="row-space"></div>
+
+
+<div class="form-group">
+	<label>Number of Guests:&nbsp;</label>
+	<input type="text" name="numGuests" style="width:2em;" maxlength='1' required />
+	<span class='red'>*</span>
+</div>
 
 <p class='red col-xs-12'>
 	* Required field
@@ -157,6 +183,7 @@ endforeach;
 <div class="col-xs-6" align='right'>
 	<input class="btn btn-warning" type="submit" value="Finish" />
 </div>
+<div class="row-space"></div>
 <div class="row-space"></div>
 
 </form>

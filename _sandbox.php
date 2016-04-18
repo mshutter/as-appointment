@@ -11,29 +11,25 @@
 
 <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
 
-<!-- first range -->
-<input id='x1' type="text" name="x1" />
-<input id='x2' type="text" name="x2" />
-<br />
+<h1>Testing Validation Rules:</h1>
+<hr />
 
-<!-- second range -->
-<input id='y1' type="text" name="y1" />
-<input id='y2' type="text" name="y2" />
-
-<button onclick="return checkDates()">Check</button>
-<div id="display"></div>
-
-<script>
-	function checkDates (x1, x2, y1, y2) {
-		//change time strings into comparable date objects
-		x1 = new Date('1/1/2011 ' + x1);
-		x2 = new Date('1/1/2011 ' + x2);
-		y1 = new Date('1/1/2011 ' + y1);
-		y2 = new Date('1/1/2011 ' + y2);
-
-		console.log(x1, x2, y1, y2);
-
-		//return false if there is a conflict
-		return !(x1 < y2 && y1 < x2);
-	}
-</script>
+<h3>Numeric</h3>
+<p>
+	0: <?php echo (is_numeric("0"))?"valid":"invalid"; ?>
+</p>
+<p>
+	1: <?php echo (is_numeric("1"))?"valid":"invalid"; ?>
+</p>
+<p>
+	12: <?php echo (is_numeric("12"))?"valid":"invalid"; ?>
+</p>
+<p>
+	f: <?php echo (is_numeric("f"))?"valid":"invalid"; ?>
+</p>
+<p>
+	null: <?php echo (is_numeric(""))?"valid":"invalid"; ?>
+</p>
+<p>
+	0: <?php echo (is_numeric(3))?"valid":"invalid"; ?>
+</p>

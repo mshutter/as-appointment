@@ -27,14 +27,17 @@
 */
 
 require_once 'Database.php';
+require_once 'UID.php';
 
 class StudentAgenda {
 
 // ========== Variables ========== //
 	private static $conn;
+	private static $UID;
 
 	public $agendaID;
 	public $studentID;
+	public $numGuests;
 
 
 // ========== Database Connection ========== //
@@ -51,6 +54,7 @@ class StudentAgenda {
 		//Assign variables if they exist in $params array
 		$this->agendaID  = ( array_key_exists('AgendaID', $params) )  ? $params['AgendaID'] : null;
 		$this->studentID = ( array_key_exists('StudentID', $params) ) ? $params['StudentID'] : null;
+		$this->numGuests = ( array_key_exists('NumGuests', $params) ) ? $params['NumGuests'] : null;
 	}
 
 	private static function construct_multiple( $arr ) {
@@ -80,6 +84,20 @@ class StudentAgenda {
 
 
 // ========== Static Methods ========== //
+	public static function NewStudentAgenda ( $params ) {
+		$params['AgendaID'] = self::NewAgendaID();
+		return new self( $params );
+	}
+
+
+	private static function NewAgendaID () {
+
+		//set UID generator with callback to verify SchedApptID will be unique
+		( !self::$UID ) ? self::$UID = new UID( ['StudentAgenda', 'GetByAgendaID'] ) : null;
+		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
+	}
+
+
 	public static function GetByAgendaID ( $agendaID ) {
 		self::InitConnection();
 

@@ -240,10 +240,23 @@ include 'partials/header.php';
 			})
 		});
 
-		console.log(schedApptData);
-
 	//construct view of each appointment returned
 		var html = '';
+		console.log(data);
+
+		//if the option to sign up for campus tour or admissions is available
+		//let the student know they are eligible for complementary lunch
+		var addLunchAlert = false;
+		data.forEach(function (grp, i) {
+			if ( grp.apptType.apptTypeID  == 1 || grp.apptType.apptTypeID  == 3 )
+				addLunchAlert = true;
+		});
+		if (addLunchAlert) {
+			html += "<div class='alert alert-info' role='alert'>"
+			     + "<strong>Heads up!</strong> If you register to <strong>tour our campus</strong> "
+			     + "and/or <strong>meet with admissions</strong>, leave a space in your "
+			     + "schedule anywhere between 11:00am and 2:00pm to enjoy lunch on us!</div>";
+		}
 
 		//for each appointment group in data
 		data.forEach(function (grp, i) {
@@ -320,8 +333,8 @@ include 'partials/header.php';
 						      	schedApptData[e.value].timeStart,
 						      	schedApptData[e.value].timeEnd) ) {
 							conflict = true;
-						conflictTime = schedApptData[e.value].timeStart;
-						conflictType = schedApptData[e.value].apptTypeID;
+							conflictTime = schedApptData[e.value].timeStart;
+							conflictType = schedApptData[e.value].apptTypeID;
 						}
 					}
 				});

@@ -25,6 +25,8 @@ class StudentAgendaItem {
 
 	public $agendaID;
 	public $schedApptID;
+	public $registrationTime;
+	public $cancelled;
 
 
 // ========== Database Connection ========== //
@@ -39,12 +41,21 @@ class StudentAgendaItem {
 	private function __construct ( $params ) {
 
 		//Assign variables if they exist in $params array
-		$this->agendaID    = ( array_key_exists('AgendaID', $params) )    ? $params['AgendaID'] : null;
-		$this->schedApptID = ( array_key_exists('SchedApptID', $params) ) ? $params['SchedApptID'] : null;
+		$this->agendaID         = $params['AgendaID'];
+		$this->schedApptID      = $params['SchedApptID'];
+		$this->registrationTime = ( array_key_exists('RegistrationTime', $params) ) ? $params['RegistrationTime'] : null;
+		$this->cancelled        = ( array_key_exists('Cancelled', $params) )   ? $params['Cancelled'] : '0';
 	}
 
 
 // ========== Static Methods ========== //
+	public static function NewAgendaItem ( $params ) {
+		if ( array_key_exists('AgendaID', $params) && array_key_exists('SchedApptID', $params) ) {
+			return new self( $params );	
+		} else return false;
+	}
+
+
 	public static function ListByAgendaID ( $agendaID, $extendedInfo = false ) {
 		self::InitConnection();
 		

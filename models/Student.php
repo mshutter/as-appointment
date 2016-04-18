@@ -27,11 +27,13 @@
 */
 
 require_once 'Database.php';
+require_once 'UID.php';
 
 class Student {
 
 // ========== Variables ========== //
 	private static $conn;
+	private static $UID;
 
 	public $studentID;
 	public $email;
@@ -39,13 +41,17 @@ class Student {
 	public $firstName;
 	public $middleInitial;
 	public $birthDate;
-	public $streetAddress;
+	public $addressLine1;
+	public $addressLine2;
 	public $city;
 	public $state;
 	public $zip;
 	public $primaryPhone;
+	public $primaryIsMobile;
 	public $secondaryPhone;
+	public $secondaryIsMobile;
 	public $highSchool;
+	public $gradYear;
 
 
 // ========== Database Connection ========== //
@@ -66,13 +72,17 @@ class Student {
 		$this->firstName      = ( array_key_exists('FirstName', $params) )      ? $params['FirstName'] : null;
 		$this->middleInitial  = ( array_key_exists('MiddleInitial', $params) )  ? $params['MiddleInitial'] : null;
 		$this->birthDate      = ( array_key_exists('BirthDate', $params) )      ? $params['BirthDate'] : null;
-		$this->streetAddress  = ( array_key_exists('StreetAddress', $params) )  ? $params['StreetAddress'] : null;
+		$this->addressLine1   = ( array_key_exists('AddressLine1', $params) )   ? $params['AddressLine1'] : null;
+		$this->addressLine2   = ( array_key_exists('AddressLine2', $params) )   ? $params['AddressLine2'] : null;
 		$this->city           = ( array_key_exists('City', $params) )           ? $params['City'] : null;
 		$this->state          = ( array_key_exists('State', $params) )          ? $params['State'] : null;
 		$this->zip            = ( array_key_exists('Zip', $params) )            ? $params['Zip'] : null;
 		$this->primaryPhone   = ( array_key_exists('PrimaryPhone', $params) )   ? $params['PrimaryPhone'] : null;
 		$this->secondaryPhone = ( array_key_exists('SecondaryPhone', $params) ) ? $params['SecondaryPhone'] : null;
+		$this->primaryIsMobile = ( array_key_exists('PrimaryIsMobile', $params) ) ? $params['PrimaryIsMobile'] : null;
+		$this->secondaryIsMobile = ( array_key_exists('SecondaryIsMobile', $params) ) ? $params['SecondaryIsMobile'] : null;
 		$this->highSchool     = ( array_key_exists('HighSchool', $params) )     ? $params['HighSchool'] : null;
+		$this->gradYear       = ( array_key_exists('GradYear', $params) )       ? $params['GradYear'] : null;
 	}
 
 	private static function construct_multiple( $arr ) {
@@ -86,6 +96,20 @@ class Student {
 
 
 // ========== Static Methods ========== //
+	public static function NewStudent ( $params ) {
+		$params['StudentID'] = self::NewStudentID();
+		return new self( $params );
+	}
+
+
+	private static function NewStudentID () {
+
+		//set UID generator with callback to verify SchedApptID will be unique
+		( !self::$UID ) ? self::$UID = new UID( ['Student', 'GetByStudentID'] ) : null;
+		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
+	}
+
+
 	public static function GetByStudentID ( $studentID, $extendedInfo = false ) {
 		self::InitConnection();
 
