@@ -69,18 +69,18 @@ class Student {
 		$this->studentID      = ( array_key_exists('StudentID', $params) )      ? $params['StudentID'] : null;
 		$this->email          = ( array_key_exists('Email', $params) )          ? $params['Email'] : null;
 		$this->lastName       = ( array_key_exists('LastName', $params) )       ? $params['LastName'] : null;
-		$this->firstName      = ( array_key_exists('FirstName', $params) )      ? $params['FirstName'] : null;
+		$this->firstName      = ( array_key_exists('FirstName', $params) )      ? $params['FirstName'] : "";
 		$this->middleInitial  = ( array_key_exists('MiddleInitial', $params) )  ? $params['MiddleInitial'] : null;
 		$this->birthDate      = ( array_key_exists('BirthDate', $params) )      ? $params['BirthDate'] : null;
 		$this->addressLine1   = ( array_key_exists('AddressLine1', $params) )   ? $params['AddressLine1'] : null;
-		$this->addressLine2   = ( array_key_exists('AddressLine2', $params) )   ? $params['AddressLine2'] : null;
+		$this->addressLine2   = ( array_key_exists('AddressLine2', $params) )   ? $params['AddressLine2'] : "";
 		$this->city           = ( array_key_exists('City', $params) )           ? $params['City'] : null;
 		$this->state          = ( array_key_exists('State', $params) )          ? $params['State'] : null;
 		$this->zip            = ( array_key_exists('Zip', $params) )            ? $params['Zip'] : null;
 		$this->primaryPhone   = ( array_key_exists('PrimaryPhone', $params) )   ? $params['PrimaryPhone'] : null;
 		$this->secondaryPhone = ( array_key_exists('SecondaryPhone', $params) ) ? $params['SecondaryPhone'] : null;
-		$this->primaryIsMobile = ( array_key_exists('PrimaryIsMobile', $params) ) ? $params['PrimaryIsMobile'] : null;
-		$this->secondaryIsMobile = ( array_key_exists('SecondaryIsMobile', $params) ) ? $params['SecondaryIsMobile'] : null;
+		$this->primaryIsMobile = ( array_key_exists('PrimaryIsMobile', $params) ) ? $params['PrimaryIsMobile'] : 0;
+		$this->secondaryIsMobile = ( array_key_exists('SecondaryIsMobile', $params) ) ? $params['SecondaryIsMobile'] : 0;
 		$this->highSchool     = ( array_key_exists('HighSchool', $params) )     ? $params['HighSchool'] : null;
 		$this->gradYear       = ( array_key_exists('GradYear', $params) )       ? $params['GradYear'] : null;
 	}
@@ -94,6 +94,88 @@ class Student {
 		return $studentList;     //and return it.
 	}
 
+// ========== Instance Methods ========== //
+	public function PushToDB () {
+		self::InitConnection();
+
+		if ( self::GetByStudentID( $this->studentID ) ) {
+			//this Student is already in the database
+			//echo 'Update';
+
+			$stmt = self::$conn->prepare('UPDATE `Student`
+			        SET `StudentID`     = :StudentID,
+			            `Email`         = :Email,
+			            `LastName`      = :LastName,
+			            `FirstName`     = :FirstName,
+			            `MiddleInitial` = :MiddleInitial,
+			            `BirthDate`     = :BirthDate,
+			            `AddressLine1`  = :AddressLine1,
+			            `AddressLine2`  = :AddressLine2,
+			            `City`          = :City,
+			            `State`         = :State,
+			            `Zip`           = :Zip,
+			            `PrimaryPhone`  = :PrimaryPhone,
+			            `SecondaryPhone` = :SecondaryPhone,
+			            `PrimaryIsMobile` = :PrimaryIsMobile,
+			            `SecondaryIsMobile` = :SecondaryIsMobile,
+			            `HighSchool`    = :HighSchool,
+			            `GradYear`      = :GradYear
+			        WHERE `StudentID` = :StudentID');
+		}
+
+		else {
+			//this Student is not in the database
+			//echo 'Input';
+			
+			$stmt = self::$conn->prepare('INSERT INTO `Student`
+			        (`StudentID`, `Email`, `LastName`, `FirstName`, `MiddleInitial`, `BirthDate`, `AddressLine1`,
+			         `AddressLine2`, `City`, `State`, `Zip`, `PrimaryPhone`, `SecondaryPhone`, `PrimaryIsMobile`,
+			         `SecondaryIsMobile`, `HighSchool`, `GradYear`)
+			        VALUES (:StudentID, :Email, :LastName, :FirstName, :MiddleInitial, :BirthDate, :AddressLine1,
+			         :AddressLine2, :City, :State, :Zip, :PrimaryPhone, :SecondaryPhone, :PrimaryIsMobile,
+			         :SecondaryIsMobile, :HighSchool, :GradYear)');
+		}
+
+		///BIND PARAMS
+			//confirm and bind studentID
+			if ( isset( $this->studentID ) && $this->studentID != "" )
+				$stmt->bindParam( ':StudentID', $this->studentID, PDO::PARAM_STR );
+			else return false;
+
+			//confirm and bind email
+			if ( isset( $this->email ) && filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) )
+				$stmt->bindParam( ':Email', $this->email, PDO::PARAM_STR );
+			else return false;
+
+			//bind name
+			$stmt->bindParam( ':LastName', $this->lastName, PDO::PARAM_STR );
+			$stmt->bindParam( ':FirstName', $this->firstName, PDO::PARAM_STR );
+			$stmt->bindParam( ':MiddleInitial', $this->middleInitial, PDO::PARAM_STR );
+
+			//bind birth date
+			$stmt->bindParam( ':BirthDate', $this->birthDate, PDO::PARAM_STR );
+
+			//bind address
+			$stmt->bindParam( ':AddressLine1', $this->addressLine1, PDO::PARAM_STR );
+			$stmt->bindParam( ':AddressLine2', $this->addressLine2, PDO::PARAM_STR );
+			$stmt->bindParam( ':City', $this->city, PDO::PARAM_STR );
+			$stmt->bindParam( ':State', $this->state, PDO::PARAM_STR );
+			$stmt->bindParam( ':Zip', $this->zip, PDO::PARAM_STR );
+
+			//bind phone info
+			$stmt->bindParam( ':PrimaryPhone', $this->primaryPhone, PDO::PARAM_STR );
+			$stmt->bindParam( ':SecondaryPhone', $this->secondaryPhone, PDO::PARAM_STR );
+			$stmt->bindParam( ':PrimaryIsMobile', $this->primaryIsMobile, PDO::PARAM_INT );
+			$stmt->bindParam( ':SecondaryIsMobile', $this->secondaryIsMobile, PDO::PARAM_INT );
+
+			//bind high school info
+			$stmt->bindParam( ':HighSchool', $this->highSchool, PDO::PARAM_STR );
+			$stmt->bindParam( ':GradYear', $this->gradYear, PDO::PARAM_STR );
+		///BIND PARAMS
+
+		$stmt->execute();
+		return true;
+	}
 
 // ========== Static Methods ========== //
 	public static function NewStudent ( $params ) {
@@ -121,7 +203,7 @@ class Student {
 			                              WHERE `StudentID` = :studentID');
 		}
 		else { //Else, only query for general information.
-			$stmt = self::$conn->prepare('SELECT `StudentID`, `Email`, `LastName`, `FirstName`
+			$stmt = self::$conn->prepare('SELECT `StudentID`, `Email`, `LastName`, `FirstName`, `MiddleInitial`
 			                              FROM `Student`
 			                              WHERE `StudentID` = :studentID');
 		}

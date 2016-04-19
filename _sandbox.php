@@ -14,6 +14,22 @@
 <h1>Testing Validation Rules:</h1>
 <hr />
 
+<?php
+
+//create agendaItem
+require_once 'models/StudentAgendaItem.php';
+$item = StudentAgendaItem::NewAgendaItem([
+	"AgendaID" => 'YIl3UB4Tux',
+	"SchedApptID" => 'UQ11JRDxoK',
+	"RegistrationTime" => date('Y-m-d H:i:s', time()),
+	"Cancelled" => '1',
+]);
+var_dump( $item );
+
+//push to db
+var_dump( $item->PushToDB() );
+?>
+
 <h3>Numeric</h3>
 <p>
 	0: <?php echo (is_numeric("0"))?"valid":"invalid"; ?>
@@ -31,5 +47,5 @@
 	null: <?php echo (is_numeric(""))?"valid":"invalid"; ?>
 </p>
 <p>
-	0: <?php echo (is_numeric(3))?"valid":"invalid"; ?>
+	1: <?php echo (is_numeric(3))?"valid":"invalid"; ?>
 </p>

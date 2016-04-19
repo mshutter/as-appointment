@@ -55,11 +55,18 @@ echo "<hr />";
 	}
 
 
-	//add highSchool, gradYear and birthDate if they are set
+	//add highSchool and gradYear if they are set
 	$studentParams['HighSchool'] = (isset($_POST['highSchool'])) ? $_POST['highSchool'] : "";
 	$studentParams['GradYear']   = (isset($_POST['gradYear']))   ? $_POST['gradYear']   : "";
-	$studentParams['BirthDate']  = (isset($_POST['birthDate']))  ? $_POST['birthDate']  : "";
 
+	//add properly formatted birth date to student params
+	if ( isset($_POST['birthDate']) ) {
+		$studentParams['BirthDate'] = date('Y-m-d', strtotime($_POST['birthDate']));	
+	}
+	else {
+		$studentParams['BirthDate'] = "";
+	}
+	
 
 	echo "<h3>\$studentParams</h3>";
 	var_dump($studentParams);
@@ -120,7 +127,6 @@ echo "<hr />";
 		array_push( $studentAgendaItems, StudentAgendaItem::NewAgendaItem($agendaItemParams) );
 	}
 
-
 	echo "<h3>\$studentAgendaItems</h3>";
 	var_dump($studentAgendaItems);
 	echo "<hr />";
@@ -129,11 +135,26 @@ echo "<hr />";
 
 //4. push everything to the DB
 
-	//push student
+	//a. push student
+	$student->PushToDB();
 
-	//push agenda
+	echo "<h3>Student::GetByStudentID()</h3>";
+	var_dump(Student::GetByStudentID($student->studentID, true));
+	echo "<hr />";
 
-	//push agenda items
+
+	//b. push agenda
+	$studentAgenda->PushToDB();
+
+	echo "<h3>StudentAgenda::GetByAgendaID()</h3>";
+	var_dump(StudentAgenda::GetByAgendaID($studentAgenda->agendaID));
+	echo "<hr />";
+
+
+	//c. push agenda items
+	foreach ($studentAgendaItems as $agendaItem) {
+		$agendaItem->pushtoDB;
+	}
 
 
 ?>

@@ -47,6 +47,41 @@ class StudentAgendaItem {
 		$this->cancelled        = ( array_key_exists('Cancelled', $params) )   ? $params['Cancelled'] : '0';
 	}
 
+	private static function construct_multiple( $arr ) {
+
+		$agendaItemList = [];    //Create new list,
+		foreach ( $arr as $r ) { //populate it with studentAgendaItem objects,
+			array_push( $agendaItemList, new self($r) );
+		}
+		return $agendaItemList;  //and return it.
+	}
+
+// ========== Instance Methods ========== //
+	public function PushToDB() {
+		self::InitConnection();
+
+		if ( StudentAgendaItem::GetByAgendaAndSchedApptID( $this->agendaID, $this->schedApptID ) ) {
+			$stmt = self::$conn->prepare('UPDATE `StudentAgendaItem`
+			        SET `RegistrationTime` = :RegistrationTime,
+			            `Cancelled`        = :Cancelled
+			        WHERE `AgendaID`       = :AgendaID
+			          AND `SchedApptID`    = :SchedApptID');
+		}
+
+		else {
+			$stmt = self::$conn->prepare('INSERT INTO `StudentAgendaItem`
+			        (`AgendaID`, `SchedApptID`, `RegistrationTime`, `Cancelled`)
+			        VALUES (:AgendaID, :SchedApptID, :RegistrationTime, :Cancelled)');
+		}
+
+		$stmt->bindParam(':AgendaID', $this->agendaID, PDO::PARAM_STR);
+		$stmt->bindParam(':SchedApptID', $this->schedApptID, PDO::PARAM_STR);
+		$stmt->bindParam(':RegistrationTime', $this->registrationTime, PDO::PARAM_STR);
+		$stmt->bindParam(':Cancelled', $this->cancelled, PDO::PARAM_INT);
+
+		return $stmt->execute();
+	}
+
 
 // ========== Static Methods ========== //
 	public static function NewAgendaItem ( $params ) {
@@ -54,6 +89,21 @@ class StudentAgendaItem {
 			return new self( $params );	
 		} else return false;
 	}
+
+
+	public static function GetByAgendaAndSchedApptID ( $agendaID, $schedApptID ) {
+		self::InitConnection();
+
+		$stmt = self::$conn->prepare('SELECT * FROM `StudentAgendaItem`
+		                              WHERE `AgendaID` = :AgendaID
+		                                AND `SchedApptID` = :SchedApptID');
+		$stmt->bindParam(':AgendaID', $agendaID, PDO::PARAM_STR);
+		$stmt->bindParam(':SchedApptID', $schedApptID, PDO::PARAM_STR);
+		$stmt->execute();
+		if ( $r = $stmt->fetch(PDO::FETCH_ASSOC) )
+			return new self($r);
+		else return false;
+	}	
 
 
 	public static function ListByAgendaID ( $agendaID, $extendedInfo = false ) {

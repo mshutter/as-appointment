@@ -68,6 +68,48 @@ class StudentAgenda {
 
 
 // ========== Instance Methods ========== //
+	public function PushToDB () {
+		self::InitConnection();
+
+		if ( self::GetByAgendaID( $this->agendaID ) ) {
+			//this StudentAgenda is already in the database
+			//echo 'Update';
+
+			$stmt = self::$conn->prepare('UPDATE `StudentAgenda`
+			        SET `StudentID` = :StudentID,
+			            `NumGuests` = :NumGuests
+			        WHERE `AgendaID` = :AgendaID');
+		}
+
+		else {
+			//this StudentAgenda is not in the database
+			//echo 'Input';
+			
+			$stmt = self::$conn->prepare('INSERT INTO `StudentAgenda`
+			        (`AgendaID`, `StudentID`, `NumGuests`)
+			        VALUES (:AgendaID, :StudentID, :NumGuests)');
+		}
+
+
+		///BIND PARAMS
+			if ( isset( $this->agendaID ) && $this->agendaID != "" )
+				$stmt->bindParam( ':AgendaID', $this->agendaID, PDO::PARAM_STR );
+			else return false;
+
+			if ( isset( $this->studentID ) && $this->studentID != "" )
+				$stmt->bindParam( ':StudentID', $this->studentID, PDO::PARAM_STR );
+			else return false;
+
+			if ( !isset( $this->numGuests ) && !is_numeric($this->numGuests) )
+				$this->numGuests = "";
+			$stmt->bindParam( ':NumGuests', $this->numGuests, PDO::PARAM_INT );
+		///END PARAMS
+
+
+		$stmt->execute();
+		return true;
+	}
+
 	public function GetAgendaItems ( $extendedInfo = false ) {
 		require_once 'StudentAgendaItem.php';
 

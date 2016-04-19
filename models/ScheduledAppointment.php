@@ -201,6 +201,7 @@ class ScheduledAppointment {
 		///BIND PARAMS
 
 		$stmt->execute();
+		return true;
 	}
 
 
