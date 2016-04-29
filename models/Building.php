@@ -57,7 +57,7 @@ class Building {
 
 	private static function construct_multiple( $arr ) {
 
-		$buildingList = [];      //Create new list,
+		$buildingList = array();      //Create new list,
 		foreach ( $arr as $r ) { //populate it with Curriculum objects,
 			array_push( $buildingList, new self($r) );
 		}

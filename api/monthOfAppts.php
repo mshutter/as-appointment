@@ -61,7 +61,7 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 
 	//execute and read results
 	$stmt->execute();
-	$monthOfAppts = []; //will hold results of query
+	$monthOfAppts = array(); //will hold results of query
 	while ( $r = $stmt->fetch() ) {
 
 		// var_dump($r);
@@ -73,7 +73,7 @@ if ( isset( $_GET['d'] ) && validateDate( $_GET['d'] ) ) {
 
 			//if this is a new day, add it to $monthOfAppts
 			if ( !array_key_exists($r['TimeStart'], $monthOfAppts) ) {
-				$monthOfAppts[$r['TimeStart']] = [$r['ApptTypeID']];
+				$monthOfAppts[$r['TimeStart']] = array($r['ApptTypeID']);
 			}
 
 			else {

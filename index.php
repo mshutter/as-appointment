@@ -18,6 +18,7 @@ include 'partials/header.php';
 		<form class="appt-filters" action="browse-appts.php" method="POST">
 			<div id='error-display'>
 				<!-- Display for validation errors -->
+        <?php echo $errors->errorMessage ?>
 			</div>
 
 			<?php require_once 'partials/filters.php' ?>

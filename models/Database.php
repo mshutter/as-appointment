@@ -9,8 +9,8 @@
 class Database {
 	private static $host = 'localhost';
 	private static $port = '3306';
-	private static $user = 'root';
-	private static $pass = 'root';
+	private static $user = 'appointment';
+	private static $pass = 'apt150!';
 	private static $name = 'appointment';
 	private static $conn;
 

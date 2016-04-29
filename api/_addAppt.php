@@ -3,7 +3,7 @@
 
 var_dump($_POST);
 
-$params = [];
+$params = array();
 
 
 //SET PARAMS

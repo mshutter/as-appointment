@@ -74,7 +74,7 @@ class Curriculum {
 
 	private static function construct_multiple( $arr ) {
 
-		$curriculumList = [];    //Create new list,
+		$curriculumList = array();    //Create new list,
 		foreach ( $arr as $r ) { //populate it with Curriculum objects,
 			array_push( $curriculumList, new self($r) );
 		}

@@ -11,7 +11,7 @@ require_once 'models/ScheduledAppointment.php';
 require_once 'models/Curriculum.php';
 require_once 'models/AppointmentType.php';
 require_once 'models/Building.php';
-$schedAppts = [];
+$schedAppts = array();
 foreach ( $_SESSION['schedApptID'] as $id ) {
 	$tmp = ScheduledAppointment::GetBySchedApptID($id);
 	$tmp->AppointmentType = AppointmentType::GetByApptTypeID($tmp->apptTypeID);
@@ -49,7 +49,7 @@ require_once "partials/header.php";
 <hr />
 <h4><?php echo date('l, F d, Y', strtotime($schedAppts[0]->timeStart)); ?></h4>
 
-<form action="api/_registerStudent.php" method="POST">
+<form action="finish.php" method="POST">
 <?php
 $i = 0;
 foreach ( $schedAppts as $appt ) : ?>

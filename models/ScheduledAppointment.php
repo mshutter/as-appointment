@@ -113,7 +113,7 @@ class ScheduledAppointment {
 
 	private static function construct_multiple( $arr ) {
 
-		$schedApptList = [];     //Create new list,
+		$schedApptList = array();     //Create new list,
 		foreach ( $arr as $r ) { //populate it with ScheduledAppointment objects,
 			array_push( $schedApptList, new self($r) );
 		}
@@ -221,12 +221,11 @@ class ScheduledAppointment {
 	}	
 
 
-
 // ========== Static Methods ========== //
 	private static function NewSchedApptID () {
 
 		//set UID generator with callback to verify SchedApptID will be unique
-		( !self::$UID ) ? self::$UID = new UID( ['ScheduledAppointment', 'GetBySchedApptID'] ) : null;
+		( !self::$UID ) ? self::$UID = new UID( array('ScheduledAppointment', 'GetBySchedApptID') ) : null;
 		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
 	}
 
@@ -257,7 +256,7 @@ class ScheduledAppointment {
 		else return false;
 	}
 
-
+	
 	public static function ListByApptTypeID ( $apptTypeID, $curriculumID = null, $date = null, $endDate = null ) {
 		self::InitConnection();
 
@@ -274,7 +273,7 @@ class ScheduledAppointment {
 			if ( $curriculumID )
 				$qry .= ' AND `CurriculumID` = :currID';
 		}
-
+		
 		//if a valid date has been passed
 		if ( strtotime( $date ) ) {
 
@@ -324,7 +323,6 @@ class ScheduledAppointment {
 		//Return false on failure.
 		else return false;
 	}
-
 }
 
 ?>

@@ -12,7 +12,7 @@ $week = date('W', $date);
 //var_dump($week);
 
 // List of 5 dates that will make up the navigation
-$dateNavList = [];
+$dateNavList = array();
 
 //get each day of the week
 for ($i=1; $i<=5; $i++) {

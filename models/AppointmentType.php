@@ -52,7 +52,7 @@ class AppointmentType {
 
 	private static function construct_multiple ( $arr ) {
 
-		$apptTypeList = [];      //Create new list,
+		$apptTypeList = array();      //Create new list,
 		foreach ( $arr as $r ) { //populate it with AppointmentType objects,
 			array_push( $apptTypeList, new self($r) );
 		}

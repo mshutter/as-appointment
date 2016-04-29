@@ -1,14 +1,22 @@
 <?php session_start();
+//***
+//TO-DO: Handle invalid/incomplete input errors (in else statements)
+//***
 
-echo "<h3>\$_REQUEST</h3>";
-var_dump($_REQUEST);
-echo "<hr />";
+/* DEBUG * /
+echo "<h3>\$_POST</h3><pre>";
+var_dump($_POST);
+echo "</pre><hr />";
+// */
 
 //1. create student
-	require_once "../models/Student.php";
+	require_once "models/Student.php";
+
 
 	//param array to create student object
-	$studentParams = [];
+	$studentParams = array();
+
+	
 
 	//if firstName and lastName are posted and are not whitespace
 	if ( isset($_POST['firstName']) && isset($_POST['lastName'])
@@ -19,13 +27,18 @@ echo "<hr />";
 		$studentParams['MiddleInitial'] = $_POST['middleInitial'];
 		$studentParams['LastName']      = $_POST['lastName']; //*	
 	}
-
+	else {
+		//ERROR: no name provided
+	}
 
 	//if email is posted and is a valid email address
 	if ( isset( $_POST['email'] ) && filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL ) ) {
 
 		//add email to params
 		$studentParams['Email'] = $_POST['email']; //*
+	}
+	else {
+		//ERROR: no email provided
 	}
 
 
@@ -42,6 +55,9 @@ echo "<hr />";
 		$studentParams['State']        = $_POST['state']; //*
 		$studentParams['Zip']          = $_POST['zip']; //*
 	}
+	else {
+		//ERROR?: no address provided
+	}
 
 
 	//if primaryPhone is posted and is not whitespace
@@ -52,6 +68,9 @@ echo "<hr />";
 		(isset($_POST['primaryIsMobile'])) ? $studentParams['PrimaryIsMobile'] = 1 : null;
 		$studentParams['SecondaryPhone'] = $_POST['secondaryPhone'];
 		(isset($_POST['secondaryIsMobile'])) ? $studentParams['SecondaryIsMobile'] = 1 : null;
+	}
+	else {
+		//no phone provided
 	}
 
 
@@ -67,55 +86,62 @@ echo "<hr />";
 		$studentParams['BirthDate'] = "";
 	}
 	
-
+	/* DEBUG * /
 	echo "<h3>\$studentParams</h3>";
 	var_dump($studentParams);
 	echo "<hr />";
+	// */
 
 
 	//student object
 	$student = Student::NewStudent($studentParams);
 
+	/* DEBUG * /
 	echo "<h3>\$student</h3>";
 	var_dump($student);
 	echo "<hr />";
+	// */
 
 
 
 //2. create student agenda
-	require_once "../models/StudentAgenda.php";
+	require_once "models/StudentAgenda.php";
 
 	//param aray to create StudentAgenda object
-	$agendaParams = [];
+	$agendaParams = array();
 	if ( isset($_POST['numGuests']) && is_numeric($_POST['numGuests']) ) {
 		$agendaParams['NumGuests'] = $_POST['numGuests'];
 	} else $agendaParams['NumGuests'] = "";
 	$agendaParams['StudentID'] = $student->studentID;
 
+	/* DEBUG * /
 	echo "<h3>\$agendaParams</h3>";
 	var_dump($agendaParams);
 	echo "<hr />";
+	// */
 
 	$studentAgenda = StudentAgenda::NewStudentAgenda($agendaParams);
 
-	echo "<h3>\$studentAgenda</h3>";
+	/* DEBUG * /
+	echo "<h3>\$studentAgenda</h3><pre>";
 	var_dump($studentAgenda);
-	echo "<hr />";
+	echo "</pre><hr />";
+	// */
 
 
 
 //3. create student agenda items
-	require_once "../models/StudentAgendaItem.php";
+	require_once "models/StudentAgendaItem.php";
 
 	//timestamp
 	date_default_timezone_set("America/New_York");
 	$timestamp = date('Y-m-d H:i:s');
 
 	//list of agenda items
-	$studentAgendaItems = [];
+	$studentAgendaItems = array();
 
 	//common params to create agenda items
-	$agendaItemParams = [];
+	$agendaItemParams = array();
 	$agendaItemParams['AgendaID'] = $studentAgenda->agendaID;
 	$agendaItemParams['RegistrationTime'] = $timestamp;
 	$agendaItemParams['Cancelled'] = 0;
@@ -127,10 +153,11 @@ echo "<hr />";
 		array_push( $studentAgendaItems, StudentAgendaItem::NewAgendaItem($agendaItemParams) );
 	}
 
-	echo "<h3>\$studentAgendaItems</h3>";
+	/* DEBUG * /
+	echo "<h3>\$studentAgendaItems</h3><pre>";
 	var_dump($studentAgendaItems);
-	echo "<hr />";
-
+	echo "</pre><hr />";
+	// */
 
 
 //4. push everything to the DB
@@ -138,23 +165,31 @@ echo "<hr />";
 	//a. push student
 	$student->PushToDB();
 
+	/* DEBUG * /
 	echo "<h3>Student::GetByStudentID()</h3>";
 	var_dump(Student::GetByStudentID($student->studentID, true));
 	echo "<hr />";
+	// */
 
 
 	//b. push agenda
 	$studentAgenda->PushToDB();
 
+	/* DEBUG * /
 	echo "<h3>StudentAgenda::GetByAgendaID()</h3>";
 	var_dump(StudentAgenda::GetByAgendaID($studentAgenda->agendaID));
 	echo "<hr />";
+	// */
 
 
 	//c. push agenda items
 	foreach ($studentAgendaItems as $agendaItem) {
-		$agendaItem->pushtoDB;
+		$agendaItem->PushToDB();
 	}
 
-
+	/* DEBUG * /
+	echo "<h3>StudentAgendaItem::GetByAgendaID()</h3>";
+	var_dump(StudentAgendaItem::ListByAgendaID($studentAgenda->agendaID));
+	echo "<hr />";
+	// */
 ?>

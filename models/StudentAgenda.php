@@ -59,7 +59,7 @@ class StudentAgenda {
 
 	private static function construct_multiple( $arr ) {
 
-		$curriculumList = [];    //Create new list,
+		$curriculumList = array();    //Create new list,
 		foreach ( $arr as $r ) { //populate it with Curriculum objects,
 			array_push( $curriculumList, new self($r) );
 		}
@@ -135,7 +135,7 @@ class StudentAgenda {
 	private static function NewAgendaID () {
 
 		//set UID generator with callback to verify SchedApptID will be unique
-		( !self::$UID ) ? self::$UID = new UID( ['StudentAgenda', 'GetByAgendaID'] ) : null;
+		( !self::$UID ) ? self::$UID = new UID( array('StudentAgenda', 'GetByAgendaID') ) : null;
 		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
 	}
 

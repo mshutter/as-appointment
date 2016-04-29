@@ -7,10 +7,10 @@
 	$date = date( 'Y-m-d', $_SESSION['date'] ).' 00:00:00';
 	$dateEnd = date( 'Y-m-d', $_SESSION['date'] ).' 23:59:59'; //datetime at the end of $date
 	$apptTypeID = $_SESSION['apptTypeID'];
-	$curriculumID = isset($_SESSION['curriculumID']) ? $_SESSION['curriculumID'] : [];
-	$currList = []; //Curriculum objects for each selected 
-	$deptList = []; //List of deptIDs that house the curriculums
-	
+	$curriculumID = isset($_SESSION['curriculumID']) ? $_SESSION['curriculumID'] : array();
+	$currList = array(); //Curriculum objects for each selected 
+	$deptList = array(); //List of deptIDs that house the curriculum
+
 //==== Get curriculum object and departmentIDs (patched from version 0.2)
 	require_once '../models/Curriculum.php';
 	foreach ($curriculumID as $curr) {
@@ -28,13 +28,13 @@
 
 
 	//response array to hold appt results
-	$res = [];
+	$res = array();
 
 	require_once '../models/AppointmentType.php';
 	require_once '../models/ScheduledAppointment.php';
-
+	
 	//make apptTypeID an array if it is not already
-	( !is_array( $apptTypeID ) ) ? $apptTypeID = [ $apptTypeID ] : null;
+	( !is_array( $apptTypeID ) ) ? $apptTypeID = array( $apptTypeID ) : null;
 
 	//For each apptType
 	foreach ( $apptTypeID as $typeID ) {
@@ -53,14 +53,14 @@
 				$apptList = $arr;
 			}
 			else {
-				$apptList = [];
+				$apptList = array();
 			}
 
 			//Create a group of appts (by apptType) to append to result
-			$apptGroup = [
+			$apptGroup = array(
 				"apptType" => AppointmentType::GetByApptTypeID( $typeID ),
 				"apptList" => $apptList
-			];
+			);
 
 			if ( $apptGroup['apptList'] ) {
 				array_push( $res, $apptGroup );
@@ -78,7 +78,7 @@
 				$department = Department::GetByDepartmentID( $deptID );
 
 				//List to hold appts
-				$apptList = [];
+				$apptList = array();
 
 				//For each curriculum that matches this department
 				foreach ( $curriculumID as $currID ) {
@@ -106,10 +106,10 @@
 				$apptType->description = $department->description;
 
 				//Create a new appointment group
-				$apptGroup = [
+				$apptGroup = array(
 					"apptType" => $apptType,
 					"apptList" => $apptList
-				];
+				);
 
 				//Append department title to appointment type title
 				$apptGroup['apptType']->title .= " - ".$department->title;

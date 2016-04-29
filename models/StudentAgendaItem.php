@@ -49,7 +49,7 @@ class StudentAgendaItem {
 
 	private static function construct_multiple( $arr ) {
 
-		$agendaItemList = [];    //Create new list,
+		$agendaItemList = array();    //Create new list,
 		foreach ( $arr as $r ) { //populate it with studentAgendaItem objects,
 			array_push( $agendaItemList, new self($r) );
 		}
@@ -118,16 +118,32 @@ class StudentAgendaItem {
 
 		//If DB successfully pulled StudentAgendaItem records
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
-			$agendaItems = [];
+			$agendaItems = array();
 
 			//If extended information is requested..
 			if ( $extendedInfo ) {
 				require_once 'ScheduledAppointment.php';
+				require_once 'Building.php';
 
 				//populate $agendaItems with ScheduledAppointment objects.
 				foreach ( $arr as $r ) {
-					array_push( $agendaItems, ScheduledAppointment::GetBySchedApptID( $r['SchedApptID'] ) );
+					$appt = ScheduledAppointment::GetBySchedApptID( $r['SchedApptID'] );
+					$appt->GetAppointmentTypeDetails();
+					$appt->Building = Building::GetByBuildingAbbrev( $appt->building );
+					$appt->GetCurriculumDetails();
+					array_push( $agendaItems, $appt );
 				}
+
+				//sort by time
+				function timeCompare ($a, $b) {
+					$a = strtotime($a->timeStart);
+					$b = strtotime($b->timeStart);
+					if ($a == $b) {
+						return 0;
+					}
+					return ($a < $b) ? -1 : 1;
+				}
+				usort($agendaItems, 'timeCompare');
 			}
 
 			//If extended information is not requested..

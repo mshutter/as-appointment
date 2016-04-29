@@ -15,37 +15,20 @@
 <hr />
 
 <?php
+//accept agendaID
 
-//create agendaItem
-require_once 'models/StudentAgendaItem.php';
-$item = StudentAgendaItem::NewAgendaItem([
-	"AgendaID" => 'YIl3UB4Tux',
-	"SchedApptID" => 'UQ11JRDxoK',
-	"RegistrationTime" => date('Y-m-d H:i:s', time()),
-	"Cancelled" => '1',
-]);
-var_dump( $item );
+//get student name
 
-//push to db
-var_dump( $item->PushToDB() );
+//get itinerary
+
+//create PDF itinerary
+
+//write note to student
+	//include information about Alfred and Admissions
+
+	//include cancel link
+
+//attach PDF
+
+
 ?>
-
-<h3>Numeric</h3>
-<p>
-	0: <?php echo (is_numeric("0"))?"valid":"invalid"; ?>
-</p>
-<p>
-	1: <?php echo (is_numeric("1"))?"valid":"invalid"; ?>
-</p>
-<p>
-	12: <?php echo (is_numeric("12"))?"valid":"invalid"; ?>
-</p>
-<p>
-	f: <?php echo (is_numeric("f"))?"valid":"invalid"; ?>
-</p>
-<p>
-	null: <?php echo (is_numeric(""))?"valid":"invalid"; ?>
-</p>
-<p>
-	1: <?php echo (is_numeric(3))?"valid":"invalid"; ?>
-</p>

@@ -30,7 +30,7 @@ require_once 'Database.php';
 require_once 'UID.php';
 
 class Student {
-
+	
 // ========== Variables ========== //
 	private static $conn;
 	private static $UID;
@@ -60,7 +60,7 @@ class Student {
 		( !self::$conn ) ? self::$conn = Database::Connect() : null;
 		return false;
 	}
-
+	
 
 // ========== Constructor ========== //
 	private function __construct ( $params ) {
@@ -87,7 +87,7 @@ class Student {
 
 	private static function construct_multiple( $arr ) {
 
-		$studentList = [];       //Create new list,
+		$studentList = array();       //Create new list,
 		foreach ( $arr as $r ) { //populate it with Curriculum objects,
 			array_push( $studentList, new self($r) );
 		}
@@ -95,6 +95,7 @@ class Student {
 	}
 
 // ========== Instance Methods ========== //
+	
 	public function PushToDB () {
 		self::InitConnection();
 
@@ -187,7 +188,7 @@ class Student {
 	private static function NewStudentID () {
 
 		//set UID generator with callback to verify SchedApptID will be unique
-		( !self::$UID ) ? self::$UID = new UID( ['Student', 'GetByStudentID'] ) : null;
+		( !self::$UID ) ? self::$UID = new UID( array('Student', 'GetByStudentID') ) : null;
 		return self::$UID->GetUniqueID(); //return uniqure SchedApptID
 	}
 
@@ -237,7 +238,7 @@ class Student {
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
 			//create a list to hold students..
-			$studentList = [];
+			$studentList = array();
 
 			//and populate it with Student objects.
 			foreach ($arr as $r) {
@@ -280,7 +281,7 @@ class Student {
 		if ( $arr = $stmt->fetchAll(PDO::FETCH_ASSOC) ) {
 
 			//create a list to hold students..
-			$studentList = [];
+			$studentList = array();
 
 			//and populate it with Student objects.
 			foreach ($arr as $r) {
@@ -293,7 +294,6 @@ class Student {
 		//If no records were retrieved:
 		else return false;
 	}
-
 }
 
 ?>

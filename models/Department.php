@@ -57,7 +57,7 @@ class Department {
 
 	private static function construct_multiple( $arr ) {
 
-		$departmentList = [];    //Create new list,
+		$departmentList = array();    //Create new list,
 		foreach ( $arr as $r ) { //populate it with Curriculum objects,
 			array_push( $departmentList, new self($r) );
 		}
